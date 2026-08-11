@@ -36,6 +36,10 @@ export default function HeroSlider({ onOpenTrialModal, onNavigateToPlans }) {
           <img
             src={slide.bgImage}
             alt={slide.title}
+            onError={(e) => {
+              e.currentTarget.src = 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1600&q=80';
+              e.currentTarget.onerror = null;
+            }}
             className="w-full h-full object-cover object-center scale-105 filter brightness-75"
           />
 
@@ -56,8 +60,8 @@ export default function HeroSlider({ onOpenTrialModal, onNavigateToPlans }) {
           </div>
 
           {/* Bold Yellow Headline */}
-          <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black uppercase tracking-tight text-white font-['Outfit'] leading-[1.1]">
-            TRAIN WITH THE <span className="text-yellow-400">BEST IN BULANDSHAHR</span>
+          <h1 className="text-3xl sm:text-5xl lg:text-7xl font-black uppercase tracking-tight text-white font-['Outfit'] leading-tight break-words px-1">
+            TRAIN WITH THE <span className="text-yellow-400 inline-block">BEST IN BULANDSHAHR</span>
           </h1>
 
           {/* Subheadline in Light Gray */}

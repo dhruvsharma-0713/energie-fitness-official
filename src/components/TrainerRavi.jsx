@@ -16,8 +16,12 @@ export default function TrainerRavi({ onOpenTrialModal }) {
             {/* Trainer Image Frame */}
             <div className="lg:col-span-5 relative aspect-[4/5] rounded-2xl overflow-hidden border-2 border-red-600/60 shadow-2xl group">
               <img 
-                src="/images/trainer_ravi.jpg" 
+                src="https://images.unsplash.com/photo-1567013127542-490d757e51fc?auto=format&fit=crop&w=1600&q=80" 
                 alt="Coach Ravi - Founder & Head Coach at Energie Fitness" 
+                onError={(e) => {
+                  e.currentTarget.src = 'https://images.unsplash.com/photo-1567013127542-490d757e51fc?auto=format&fit=crop&w=1600&q=80';
+                  e.currentTarget.onerror = null;
+                }}
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 filter brightness-95"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent" />
@@ -38,8 +42,8 @@ export default function TrainerRavi({ onOpenTrialModal }) {
                 <Award className="w-4 h-4 text-red-500" /> Certified Transformation Specialist
               </div>
 
-              <h2 className="text-3xl md:text-5xl font-black text-white uppercase tracking-tight font-['Outfit']">
-                TRAIN UNDER <span className="text-yellow-400">COACH RAVI</span>
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-white uppercase font-['Outfit'] leading-tight break-words px-1">
+                TRAIN UNDER <span className="text-yellow-400 inline-block">COACH RAVI</span>
               </h2>
 
               <p className="text-[#b3b3b3] text-sm md:text-base leading-relaxed">

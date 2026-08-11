@@ -26,7 +26,7 @@ export const GYM_DETAILS = {
       desc: "Train at Bulandshahr's #1 high-tech fitness destination featuring modern pin-loaded strength machines, cardio zone & CrossFit arena.",
       ctaText: "Get 1-Day Free Pass",
       ctaAction: "trial",
-      bgImage: "/images/hero_crossfit.jpg"
+      bgImage: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1600&q=80"
     },
     {
       id: 2,
@@ -35,7 +35,7 @@ export const GYM_DETAILS = {
       desc: "Push your physical limits with battle ropes, kettlebells, sled tracks, and functional training cage guided by expert trainers.",
       ctaText: "View Class Timetable",
       ctaAction: "timetable",
-      bgImage: "/images/cardio_zone.jpg"
+      bgImage: "https://images.unsplash.com/photo-1576678927484-cc909d519616?auto=format&fit=crop&w=1600&q=80"
     },
     {
       id: 3,
@@ -44,7 +44,7 @@ export const GYM_DETAILS = {
       desc: "Exclusive couple membership packages with customized dual workout routines, partner exercises, and dietician guidance.",
       ctaText: "Explore Couple Plans",
       ctaAction: "plans",
-      bgImage: "/images/couple_training.jpg"
+      bgImage: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&w=1600&q=80"
     }
   ],
 
@@ -55,9 +55,9 @@ export const GYM_DETAILS = {
   ],
 
   galleryImages: [
-    { id: "g1", title: "CrossFit Arena & Dumbbell Racks", image: "/images/hero_crossfit.jpg", category: "CrossFit Zone" },
-    { id: "g2", title: "High-Tech Treadmills & Cardio Zone", image: "/images/cardio_zone.jpg", category: "Cardio Zone" },
-    { id: "g3", title: "Personal Training & Couple Workouts", image: "/images/couple_training.jpg", category: "Personal Training" }
+    { id: "g1", title: "CrossFit Arena & Dumbbell Racks", image: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1600&q=80", category: "CrossFit Zone" },
+    { id: "g2", title: "High-Tech Treadmills & Cardio Zone", image: "https://images.unsplash.com/photo-1576678927484-cc909d519616?auto=format&fit=crop&w=1600&q=80", category: "Cardio Zone" },
+    { id: "g3", title: "Personal Training & Couple Workouts", image: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&w=1600&q=80", category: "Personal Training" }
   ],
 
   timetableClasses: [
@@ -110,7 +110,7 @@ export const GYM_DETAILS = {
       youtubeUrl: "https://www.youtube.com/@energiefitness1060",
       duration: "03:45",
       category: "Club Tour",
-      thumbnail: "/images/hero_crossfit.jpg",
+      thumbnail: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1600&q=80",
       description: "Take a virtual walkthrough of Bulandshahr's #1 high-tech fitness destination featuring pin-loaded strength rigs, dumbbell wall, and functional cage."
     },
     {
@@ -120,7 +120,7 @@ export const GYM_DETAILS = {
       youtubeUrl: "https://www.youtube.com/@energiefitness1060",
       duration: "05:12",
       category: "Workout Demos",
-      thumbnail: "/images/cardio_zone.jpg",
+      thumbnail: "https://images.unsplash.com/photo-1576678927484-cc909d519616?auto=format&fit=crop&w=1600&q=80",
       description: "Coach Ravi demonstrates 5 explosive CrossFit exercises to burn up to 800 calories in 45 minutes using battle ropes, sleds, and kettlebells."
     },
     {
@@ -130,7 +130,7 @@ export const GYM_DETAILS = {
       youtubeUrl: "https://www.youtube.com/@energiefitness1060",
       duration: "04:20",
       category: "Couple Special",
-      thumbnail: "/images/couple_training.jpg",
+      thumbnail: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&w=1600&q=80",
       description: "Watch real couples achieve target fat loss with customized partner drills and dual dietician support at Energie Fitness Bulandshahr."
     },
     {
@@ -140,7 +140,7 @@ export const GYM_DETAILS = {
       youtubeUrl: "https://www.youtube.com/@energiefitness1060",
       duration: "06:05",
       category: "Strength Training",
-      thumbnail: "/images/strength_zone.jpg",
+      thumbnail: "https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?auto=format&fit=crop&w=1600&q=80",
       description: "Master proper form on chest press, squat rack, and lat pulldown with step-by-step coaching tips from Coach Ravi."
     }
   ],

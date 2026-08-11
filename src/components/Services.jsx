@@ -18,14 +18,14 @@ export default function Services({ onOpenTrialModal, services }) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto space-y-4 mb-14">
+        <div className="w-full max-w-6xl mx-auto px-4 text-center space-y-4 mb-14">
           <div className="inline-flex items-center gap-2 bg-red-600/20 border border-red-600/40 px-4 py-1.5 rounded-full text-yellow-400 text-xs font-black uppercase tracking-widest">
             <Zap className="w-4 h-4 text-red-500" /> High-Performance Facilities
           </div>
-          <h2 className="text-3xl md:text-5xl font-black text-white uppercase font-['Outfit']">
-            TRAIN WITH <span className="text-yellow-400">OUR SERVICES</span>
+          <h2 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight text-white uppercase font-['Outfit'] leading-tight">
+            TRAIN WITH <span className="text-yellow-400">THE BEST</span> IN BULANDSHAHR
           </h2>
-          <p className="text-[#b3b3b3] text-sm sm:text-base">
+          <p className="text-[#b3b3b3] text-sm sm:text-base max-w-2xl mx-auto">
             Modern pin-loaded strength machines, heavy dumbbell arena, CrossFit cage, and personal coaching.
           </p>
         </div>

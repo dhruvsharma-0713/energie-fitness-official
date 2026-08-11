@@ -14,7 +14,7 @@ export default function TrainWithUsView({ onOpenTrialModal, onSelectPlan }) {
       category: 'Strength',
       desc: 'Train with high-precision pin-loaded machines, power racks, heavy smith machines, and a rubberized dumbbell arena with weights up to 50kg.',
       icon: Dumbbell,
-      image: '/images/strength_zone.jpg',
+      image: 'https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?auto=format&fit=crop&w=1600&q=80',
       highlights: ['Pin-selected isolateral machines', 'Olympic barbell press racks', 'Heavy-duty dumbbell collection up to 50kg', 'Safety spotter zones']
     },
     {
@@ -23,7 +23,7 @@ export default function TrainWithUsView({ onOpenTrialModal, onSelectPlan }) {
       category: 'CrossFit',
       desc: 'Push your athletic capacity in our dedicated functional training arena equipped with battle ropes, plyometric boxes, kettlebells, and sled tracks.',
       icon: Zap,
-      image: '/images/hero_crossfit.jpg',
+      image: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1600&q=80',
       highlights: ['Functional training rig & cage', 'Heavy battle ropes & sled tracks', 'Kettlebell & wall-ball arena', 'HIIT agility ladder drills']
     },
     {
@@ -32,7 +32,7 @@ export default function TrainWithUsView({ onOpenTrialModal, onSelectPlan }) {
       category: 'Personal Training',
       desc: 'Accelerate your transformation with tailored workout cards, bi-weekly body fat scanning, dietician macros chart, and continuous posture guidance.',
       icon: Users,
-      image: '/images/trainer_ravi.jpg',
+      image: 'https://images.unsplash.com/photo-1567013127542-490d757e51fc?auto=format&fit=crop&w=1600&q=80',
       highlights: ['Custom workout cards & exercise tracking', 'Targeted macro diet plans', 'Weekly body fat composition checks', 'Injury-free posture correction']
     },
     {
@@ -41,7 +41,7 @@ export default function TrainWithUsView({ onOpenTrialModal, onSelectPlan }) {
       category: 'Cardio',
       desc: 'Burn maximum calories with commercial-grade motorized treadmills, elliptical cross-trainers, assault bikes, and stairmasters.',
       icon: Target,
-      image: '/images/cardio_zone.jpg',
+      image: 'https://images.unsplash.com/photo-1576678927484-cc909d519616?auto=format&fit=crop&w=1600&q=80',
       highlights: ['Touchscreen shock-absorbent treadmills', 'Heart rate monitor sync', 'Calorie sprint routines', 'Low-impact cross trainers']
     },
     {
@@ -50,7 +50,7 @@ export default function TrainWithUsView({ onOpenTrialModal, onSelectPlan }) {
       category: 'Couple Special',
       desc: 'Work out together with your partner or gym buddy. Shared workout sessions, dual progress charts, and special pair discounts.',
       icon: Heart,
-      image: '/images/couple_training.jpg',
+      image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&w=1600&q=80',
       highlights: ['Dual partner workout routines', 'Synchronized conditioning drills', '2-person membership discounts', 'Shared nutrition tracking']
     }
   ];
@@ -66,13 +66,13 @@ export default function TrainWithUsView({ onOpenTrialModal, onSelectPlan }) {
       <section className="relative py-16 md:py-24 bg-gradient-to-b from-neutral-900 via-neutral-950 to-black border-b border-neutral-800 overflow-hidden">
         <div className="absolute inset-0 opacity-20 bg-[radial-gradient(#84cc16_1px,transparent_1px)] [background-size:24px_24px]" />
         
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
-          <div className="inline-flex items-center gap-2 bg-lime-400/10 border border-lime-400/30 px-4 py-1.5 rounded-full text-lime-400 text-xs font-black uppercase tracking-widest mb-6">
+        <div className="w-full max-w-6xl mx-auto px-4 text-center space-y-4 relative z-10">
+          <div className="inline-flex items-center gap-2 bg-lime-400/10 border border-lime-400/30 px-4 py-1.5 rounded-full text-lime-400 text-xs font-black uppercase tracking-widest mb-2">
             <Sparkles className="w-4 h-4" /> Premier Health Club Services
           </div>
 
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-black tracking-tight uppercase font-['Outfit']">
-            TRAIN WITH <span className="text-transparent bg-clip-text bg-gradient-to-r from-lime-400 to-emerald-400">THE BEST</span> IN BULANDSHAHR
+          <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight text-white uppercase font-['Outfit'] leading-tight">
+            TRAIN WITH <span className="text-lime-400">THE BEST</span> IN BULANDSHAHR
           </h1>
 
           <p className="text-neutral-400 text-base md:text-xl max-w-3xl mx-auto mt-4 leading-relaxed font-medium">
@@ -136,6 +136,10 @@ export default function TrainWithUsView({ onOpenTrialModal, onSelectPlan }) {
                 <img 
                   src={service.image} 
                   alt={service.title}
+                  onError={(e) => {
+                    e.currentTarget.src = 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1600&q=80';
+                    e.currentTarget.onerror = null;
+                  }}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />

@@ -14,8 +14,8 @@ export default function AboutUsView({ onOpenTrialModal }) {
             <Sparkles className="w-4 h-4" /> About Energie Fitness Bulandshahr
           </div>
 
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-black uppercase tracking-tight font-['Outfit']">
-            OUR STORY & <span className="text-transparent bg-clip-text bg-gradient-to-r from-lime-400 to-emerald-400">MISSION</span>
+          <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-black uppercase tracking-tight font-['Outfit'] leading-tight break-words px-2">
+            OUR STORY & <span className="text-transparent bg-clip-text bg-gradient-to-r from-lime-400 to-emerald-400 inline-block pb-1">MISSION</span>
           </h1>
 
           <p className="text-neutral-400 text-base md:text-xl max-w-3xl mx-auto mt-4 leading-relaxed font-medium">

@@ -54,7 +54,7 @@ const DEFAULT_POSTS = [
     authorAvatar: 'A',
     category: 'Physique Progress',
     content: 'Hit a new PR on Incline Dumbbell Press (34kg) today at Coach Ravi’s evening slot! Consistency pays off 🔥',
-    image: '/images/strength_zone.jpg',
+    image: 'https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?auto=format&fit=crop&w=1600&q=80',
     createdAt: '2 hours ago',
     likes: ['EF-1002'],
     comments: [
@@ -69,7 +69,7 @@ const DEFAULT_POSTS = [
     authorAvatar: 'R',
     category: 'Workout Challenge',
     content: 'Completed the Sunday Couple Partner Workout Circuit in 24 minutes! Best gym energy in Bulandshahr.',
-    image: '/images/couple_training.jpg',
+    image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&w=1600&q=80',
     createdAt: '1 day ago',
     likes: ['EF-1001', 'EF-1003'],
     comments: []
@@ -120,6 +120,7 @@ export default function App() {
 
   // Modal States
   const [isTrialModalOpen, setIsTrialModalOpen] = useState(false);
+  const [selectedDeal, setSelectedDeal] = useState(null);
   const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState(false);
   const [isReceiptModalOpen, setIsReceiptModalOpen] = useState(false);
   const [isAdminLoginOpen, setIsAdminLoginOpen] = useState(false);
@@ -128,6 +129,20 @@ export default function App() {
 
   const [selectedPlanForCheckout, setSelectedPlanForCheckout] = useState(null);
   const [receiptMember, setReceiptMember] = useState(null);
+
+  const handleOpenTrialModal = (deal = null) => {
+    if (deal && !deal.target && typeof deal === 'object') {
+      setSelectedDeal(deal);
+    } else {
+      setSelectedDeal(null);
+    }
+    setIsTrialModalOpen(true);
+  };
+
+  const handleCloseTrialModal = () => {
+    setIsTrialModalOpen(false);
+    setSelectedDeal(null);
+  };
 
   // Sync LocalStorage
   useEffect(() => { window.localStorage.setItem(STORAGE_KEYS.members, JSON.stringify(members)); }, [members]);
@@ -311,7 +326,7 @@ export default function App() {
         setActiveRole={handleRoleChange} 
         currentView={currentView}
         setCurrentView={handleNavigate}
-        onOpenTrialModal={() => setIsTrialModalOpen(true)}
+        onOpenTrialModal={handleOpenTrialModal}
         onOpenAuthModal={() => setIsAuthModalOpen(true)}
         onOpenPoliciesModal={() => setIsPoliciesModalOpen(true)}
         currentUser={currentUser}
@@ -328,7 +343,7 @@ export default function App() {
           {currentView === 'home' && (
             <>
               <HeroSlider 
-                onOpenTrialModal={() => setIsTrialModalOpen(true)}
+                onOpenTrialModal={handleOpenTrialModal}
                 onNavigateToPlans={() => {
                   handleNavigate('membership');
                   window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -336,11 +351,11 @@ export default function App() {
               />
               <Services 
                 services={gymDetails?.services} 
-                onOpenTrialModal={() => setIsTrialModalOpen(true)} 
+                onOpenTrialModal={handleOpenTrialModal} 
               />
               <YouTubeShowcase />
-              <TrainerRavi onOpenTrialModal={() => setIsTrialModalOpen(true)} />
-              <ClassTimetable onOpenTrialModal={() => setIsTrialModalOpen(true)} />
+              <TrainerRavi onOpenTrialModal={handleOpenTrialModal} />
+              <ClassTimetable onOpenTrialModal={handleOpenTrialModal} />
               <ClubGallery />
               <Pricing 
                 plans={gymDetails?.plans} 
@@ -354,7 +369,7 @@ export default function App() {
 
           {/* TRAIN WITH US VIEW */}
           {currentView === 'train-with-us' && (
-            <TrainWithUsView onOpenTrialModal={() => setIsTrialModalOpen(true)} />
+            <TrainWithUsView onOpenTrialModal={handleOpenTrialModal} />
           )}
 
           {/* MEMBERSHIPS VIEW */}
@@ -363,7 +378,7 @@ export default function App() {
               plans={gymDetails?.plans}
               specialOffers={gymDetails?.specialOffers}
               onSelectPlan={handleSelectPlan} 
-              onOpenTrialModal={() => setIsTrialModalOpen(true)}
+              onOpenTrialModal={handleOpenTrialModal}
             />
           )}
 
@@ -374,12 +389,12 @@ export default function App() {
 
           {/* CLUB FINDER VIEW */}
           {currentView === 'club-finder' && (
-            <ClubFinderView onOpenTrialModal={() => setIsTrialModalOpen(true)} />
+            <ClubFinderView onOpenTrialModal={handleOpenTrialModal} />
           )}
 
           {/* ABOUT US VIEW */}
           {currentView === 'about' && (
-            <AboutUsView onOpenTrialModal={() => setIsTrialModalOpen(true)} />
+            <AboutUsView onOpenTrialModal={handleOpenTrialModal} />
           )}
 
           {/* POLICIES VIEW */}
@@ -434,13 +449,14 @@ export default function App() {
       <FitnessFirstFooter 
         setCurrentView={handleNavigate}
         setActiveRole={handleRoleChange}
-        onOpenTrialModal={() => setIsTrialModalOpen(true)}
+        onOpenTrialModal={handleOpenTrialModal}
       />
 
       {/* MODALS */}
       <FreeTrialModal 
         isOpen={isTrialModalOpen} 
-        onClose={() => setIsTrialModalOpen(false)} 
+        onClose={handleCloseTrialModal} 
+        selectedDeal={selectedDeal}
         onAddLead={handleAddLead}
       />
 
@@ -454,8 +470,12 @@ export default function App() {
       <CheckoutModal
         isOpen={isCheckoutModalOpen}
         onClose={() => setIsCheckoutModalOpen(false)}
-        plan={selectedPlanForCheckout}
+        selectedPlan={selectedPlanForCheckout}
         onCompletePayment={handleCompletePayment}
+        existingMembers={members}
+        currentUser={currentUser}
+        onAuthSuccess={handleAuthSuccess}
+        onViewReceipt={handleViewReceipt}
       />
 
       <ReceiptModal

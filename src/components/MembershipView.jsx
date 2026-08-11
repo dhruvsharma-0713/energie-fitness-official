@@ -14,13 +14,13 @@ export default function MembershipView({ onSelectPlan, onOpenTrialModal, plans, 
       <section className="relative py-16 md:py-24 bg-gradient-to-b from-neutral-900 via-neutral-950 to-black border-b border-neutral-800 text-center overflow-hidden">
         <div className="absolute top-0 right-10 w-96 h-96 bg-lime-400/10 rounded-full blur-3xl pointer-events-none" />
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="inline-flex items-center gap-2 bg-lime-400/10 border border-lime-400/30 px-4 py-1.5 rounded-full text-lime-400 text-xs font-black uppercase tracking-widest mb-6">
+        <div className="w-full max-w-6xl mx-auto px-4 text-center space-y-4 relative z-10">
+          <div className="inline-flex items-center gap-2 bg-lime-400/10 border border-lime-400/30 px-4 py-1.5 rounded-full text-lime-400 text-xs font-black uppercase tracking-widest mb-2">
             <Sparkles className="w-4 h-4" /> Transparent Pricing & Couple Special Offers
           </div>
 
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-black uppercase tracking-tight font-['Outfit']">
-            MEMBERSHIP <span className="text-transparent bg-clip-text bg-gradient-to-r from-lime-400 to-emerald-400">PACKAGES & OFFERS</span>
+          <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight text-white uppercase font-['Outfit'] leading-tight">
+            MEMBERSHIP <span className="text-lime-400">PACKAGES & OFFERS</span>
           </h1>
 
           <p className="text-neutral-400 text-base md:text-xl max-w-2xl mx-auto mt-4 leading-relaxed font-medium">
@@ -60,10 +60,10 @@ export default function MembershipView({ onSelectPlan, onOpenTrialModal, plans, 
               <div className="flex items-center justify-between pt-4 border-t border-neutral-800 text-xs">
                 <span className="text-neutral-400">Promo Code: <strong className="text-lime-400 font-mono tracking-wider">{offer.code}</strong></span>
                 <button
-                  onClick={onOpenTrialModal}
-                  className="text-lime-400 hover:underline font-extrabold flex items-center gap-1"
+                  onClick={() => onOpenTrialModal(offer)}
+                  className="bg-lime-400/10 hover:bg-lime-400 text-lime-400 hover:text-black border border-lime-400/40 px-3.5 py-1.5 rounded-xl font-black text-xs uppercase tracking-wider flex items-center gap-1.5 transition duration-200 transform hover:scale-105 cursor-pointer shadow-md"
                 >
-                  Claim Deal <ArrowRight className="w-3.5 h-3.5" />
+                  <span>Claim Deal</span> <ArrowRight className="w-3.5 h-3.5" />
                 </button>
               </div>
             </div>

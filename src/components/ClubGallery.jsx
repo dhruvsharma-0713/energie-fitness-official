@@ -4,10 +4,10 @@ import { GYM_DETAILS } from '../data/mockData';
 
 export default function ClubGallery() {
   const images = [
-    { id: "g1", title: "CrossFit Arena & Heavy Free Weights", image: "/images/hero_crossfit.jpg", category: "CrossFit Zone" },
-    { id: "g2", title: "High-Tech Cardio & Treadmills", image: "/images/cardio_zone.jpg", category: "Cardio Zone" },
-    { id: "g3", title: "Personal Coaching & Couple Studio", image: "/images/couple_training.jpg", category: "Personal Studio" },
-    { id: "g4", title: "Heavy Dumbbell Racks & Power Cages", image: "/images/strength_zone.jpg", category: "Strength Area" }
+    { id: "g1", title: "CrossFit Arena & Heavy Free Weights", image: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1600&q=80", category: "CrossFit Zone" },
+    { id: "g2", title: "High-Tech Cardio & Treadmills", image: "https://images.unsplash.com/photo-1576678927484-cc909d519616?auto=format&fit=crop&w=1600&q=80", category: "Cardio Zone" },
+    { id: "g3", title: "Personal Coaching & Couple Studio", image: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&w=1600&q=80", category: "Personal Studio" },
+    { id: "g4", title: "Heavy Dumbbell Racks & Power Cages", image: "https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?auto=format&fit=crop&w=1600&q=80", category: "Strength Area" }
   ];
 
   const [activeImage, setActiveImage] = useState(images[0]);
@@ -19,8 +19,8 @@ export default function ClubGallery() {
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto space-y-4 mb-12">
           <span className="badge badge-lime uppercase font-mono tracking-widest">Gym Visual Gallery</span>
-          <h2 className="text-3xl md:text-5xl font-extrabold text-white uppercase font-['Outfit']">
-            VIRTUAL TOUR OF <span className="text-lime-400">ENERGIE FITNESS</span>
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white uppercase font-['Outfit'] leading-tight break-words px-2">
+            VIRTUAL TOUR OF <span className="text-lime-400 inline-block">ENERGIE FITNESS</span>
           </h2>
           <p className="text-neutral-400 text-sm sm:text-base">
             Take a look inside our fitness facility, CrossFit cage, cardio section, and heavy strength zone.
@@ -33,6 +33,10 @@ export default function ClubGallery() {
             <img 
               src={activeImage.image} 
               alt={activeImage.title} 
+              onError={(e) => {
+                e.currentTarget.src = 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1600&q=80';
+                e.currentTarget.onerror = null;
+              }}
               className="w-full h-full object-cover transform hover:scale-105 transition duration-700"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-neutral-950 via-transparent to-black/30" />
@@ -55,7 +59,15 @@ export default function ClubGallery() {
                   activeImage.id === img.id ? 'border-lime-400 scale-[1.02] shadow-lg shadow-lime-400/20' : 'border-neutral-800 opacity-60 hover:opacity-100'
                 }`}
               >
-                <img src={img.image} alt={img.title} className="w-full h-full object-cover" />
+                <img 
+                  src={img.image} 
+                  alt={img.title} 
+                  onError={(e) => {
+                    e.currentTarget.src = 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1600&q=80';
+                    e.currentTarget.onerror = null;
+                  }}
+                  className="w-full h-full object-cover" 
+                />
                 <div className="absolute inset-0 bg-black/40" />
                 <div className="absolute bottom-2 left-2 text-left text-[11px] font-bold text-white font-['Outfit'] truncate max-w-[90%]">
                   {img.category}

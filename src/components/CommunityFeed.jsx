@@ -227,7 +227,15 @@ export default function CommunityFeed({ currentUser, members = [], posts = [], s
                     {/* Post Image */}
                     {post.image && (
                       <div className="rounded-2xl overflow-hidden max-h-80 border border-neutral-800 bg-black">
-                        <img src={post.image} alt="Progress Post" className="w-full h-full object-cover" />
+                        <img 
+                          src={post.image} 
+                          alt="Progress Post" 
+                          onError={(e) => {
+                            e.currentTarget.src = 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1600&q=80';
+                            e.currentTarget.onerror = null;
+                          }}
+                          className="w-full h-full object-cover" 
+                        />
                       </div>
                     )}
 
