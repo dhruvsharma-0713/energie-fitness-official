@@ -1,0 +1,204 @@
+/* =========================================================================
+ * ENERGIE FITNESS - BOLD BLACK, VIBRANT YELLOW & CRIMSON RED THEME
+ * Refactored layout, premium gym aesthetics inspired by Fitness First
+ * ========================================================================= */
+
+@import "tailwindcss";
+@config "../tailwind.config.js";
+
+@theme {
+  --font-outfit: 'Outfit', sans-serif;
+  --font-jakarta: 'Plus Jakarta Sans', sans-serif;
+  --color-pitch-black: #0d0d0d;
+  --color-card-dark: #121212;
+  --color-vibrant-yellow: #ffe600;
+  --color-crimson-red: #e50914;
+}
+
+:root {
+  --bg-pitch-black: #0d0d0d;
+  --bg-card: #121212;
+  --bg-card-hover: #1a1a1a;
+  --accent-yellow: #ffe600; /* Vibrant Yellow */
+  --accent-yellow-hover: #ffd700;
+  --accent-red: #e50914; /* Crimson Red */
+  --accent-red-hover: #d3122a;
+  --text-white: #ffffff;
+  --text-gray: #b3b3b3;
+  --border-dark: #262626;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+  color-scheme: dark;
+  background-color: var(--bg-pitch-black);
+  color: var(--text-white);
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+  letter-spacing: -0.03em;
+  font-weight: 900;
+  line-height: 1.15;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-pitch-black);
+}
+::-webkit-scrollbar-thumb {
+  background: #262626;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-yellow);
+}
+
+/* Glass & Dark Cards */
+.glass-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-dark);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-card:hover {
+  border-color: var(--accent-red);
+  box-shadow: 0 20px 40px -15px rgba(229, 9, 20, 0.2);
+  transform: translateY(-2px);
+}
+
+/* Primary Yellow Button */
+.btn-yellow {
+  background-color: var(--accent-yellow);
+  color: #000000;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 900;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.75rem;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  box-shadow: 0 10px 25px -5px rgba(255, 230, 0, 0.3);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  text-decoration: none;
+  font-size: 0.9375rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.btn-yellow:hover {
+  background-color: var(--accent-yellow-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 14px 30px -5px rgba(255, 230, 0, 0.45);
+}
+
+/* Secondary Red Outline Button */
+.btn-red-outline {
+  background-color: transparent;
+  color: var(--text-white);
+  border: 2px solid var(--accent-red);
+  font-family: 'Outfit', sans-serif;
+  font-weight: 800;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.75rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  text-decoration: none;
+  font-size: 0.9375rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.btn-red-outline:hover {
+  background-color: var(--accent-red);
+  color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px -5px rgba(229, 9, 20, 0.4);
+}
+
+/* Inputs & Form Fields */
+.input-field {
+  width: 100%;
+  background-color: #1a1a1a;
+  border: 1px solid #333333;
+  border-radius: 0.75rem;
+  padding: 0.75rem 1rem;
+  color: #ffffff;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.875rem;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.input-field:focus {
+  border-color: var(--accent-yellow);
+  box-shadow: 0 0 0 3px rgba(255, 230, 0, 0.2);
+}
+
+input[type="range"] {
+  accent-color: var(--accent-yellow);
+  background-color: #262626;
+  height: 0.5rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+}
+
+/* Badges */
+.badge-yellow {
+  background-color: rgba(255, 230, 0, 0.15);
+  color: var(--accent-yellow);
+  border: 1px solid rgba(255, 230, 0, 0.4);
+}
+
+.badge-red {
+  background-color: rgba(229, 9, 20, 0.15);
+  color: #ff4d4d;
+  border: 1px solid rgba(229, 9, 20, 0.4);
+}
+
+/* Modal Overlay */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.9);
+  backdrop-filter: blur(12px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.25rem;
+}
+
+/* Explicit Font Family Fallbacks for dynamic utility classes */
+.font-outfit {
+  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif !important;
+}
+
+.font-jakarta {
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif !important;
+}
+
