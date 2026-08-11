@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Analytics } from '@vercel/analytics/react';
 import Navbar from './components/Navbar';
 import HeroSlider from './components/HeroSlider';
 import Services from './components/Services';
@@ -484,6 +485,9 @@ export default function App() {
         onUpdateStorageData={handleUpdateStorageKey}
         onResetAll={handleResetData}
       />
+
+      {/* Vercel Web Analytics */}
+      <Analytics />
 
     </div>
   );
