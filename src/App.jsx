@@ -20,6 +20,9 @@ import YouTubeShowcase from './components/YouTubeShowcase';
 import AuthModal from './components/AuthModal';
 import PoliciesModal from './components/PoliciesModal';
 import RootPortalModal from './components/RootPortalModal';
+import AboutModal from './components/AboutModal';
+import CommunityFeed from './components/CommunityFeed';
+import RenewPlanModal from './components/RenewPlanModal';
 
 // Restructured View Components
 import TrainWithUsView from './components/TrainWithUsView';
@@ -126,9 +129,24 @@ export default function App() {
   const [isAdminLoginOpen, setIsAdminLoginOpen] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [isPoliciesModalOpen, setIsPoliciesModalOpen] = useState(false);
+  const [isAboutModalOpen, setIsAboutModalOpen] = useState(false);
+  const [isRenewalModalOpen, setIsRenewalModalOpen] = useState(false);
 
   const [selectedPlanForCheckout, setSelectedPlanForCheckout] = useState(null);
   const [receiptMember, setReceiptMember] = useState(null);
+  const [renewalMember, setRenewalMember] = useState(null);
+
+  const handleOpenRenewalModal = (memberToRenew) => {
+    setRenewalMember(memberToRenew || currentUser || currentPortalMember);
+    setIsRenewalModalOpen(true);
+  };
+
+  const handleCompleteRenewal = (updatedUser, newTransaction) => {
+    setCurrentUser(updatedUser);
+    setCurrentPortalMember(updatedUser);
+    setMembers(prev => prev.map(m => m.id === updatedUser.id ? updatedUser : m));
+    setTransactions(prev => [newTransaction, ...prev]);
+  };
 
   const handleOpenTrialModal = (deal = null) => {
     if (deal && !deal.target && typeof deal === 'object') {
@@ -329,16 +347,36 @@ export default function App() {
         onOpenTrialModal={handleOpenTrialModal}
         onOpenAuthModal={() => setIsAuthModalOpen(true)}
         onOpenPoliciesModal={() => setIsPoliciesModalOpen(true)}
+        onOpenAboutModal={() => setIsAboutModalOpen(true)}
         currentUser={currentUser}
         onUserLogout={handleUserLogout}
         onLogoutAdmin={handleLogoutAdmin}
         isAdminUnlocked={isAdminUnlocked}
       />
 
-      {/* VIEW ROLE 1: PUBLIC BRAND SITE */}
-      {activeRole === 'visitor' && (
+      {/* SITE & MEMBER VIEWS CONTAINER */}
+      {activeRole !== 'admin' && (
         <main className="w-full max-w-full overflow-x-hidden grow space-y-0">
           
+          {/* MEMBER PORTAL VIEW (When currentView is portal/dashboard/member OR default member view) */}
+          {(currentView === 'portal' || currentView === 'dashboard' || currentView === 'member' || (activeRole === 'member' && !['home', 'train-with-us', 'membership', 'try-us', 'club-finder', 'about', 'policies'].includes(currentView))) && (
+            <MemberPortal 
+              member={currentUser || currentPortalMember} 
+              members={members}
+              posts={posts}
+              setPosts={setPosts}
+              friends={friends}
+              setFriends={setFriends}
+              onRenewPlan={handleOpenRenewalModal}
+              onViewReceipt={handleViewReceipt}
+              onRecordAttendance={handleRecordAttendance}
+              onOpenAuthModal={() => setIsAuthModalOpen(true)}
+              onNavigate={handleNavigate}
+              currentView={currentView}
+              onOpenAboutModal={() => setIsAboutModalOpen(true)}
+            />
+          )}
+
           {/* HOME VIEW */}
           {currentView === 'home' && (
             <>
@@ -361,7 +399,18 @@ export default function App() {
                 plans={gymDetails?.plans} 
                 onSelectPlan={handleSelectPlan} 
               />
-              <BmiCalculator onSelectPlan={handleSelectPlan} />
+              <BmiCalculator 
+                onSelectPlan={handleSelectPlan} 
+                currentUser={currentUser}
+                onOpenAuthModal={() => setIsAuthModalOpen(true)}
+                onSaveWorkoutToMember={(newRoutine) => {
+                  if (currentUser) {
+                    const updatedUser = { ...currentUser, workoutRoutine: newRoutine };
+                    setCurrentUser(updatedUser);
+                    setMembers(prev => prev.map(m => m.id === currentUser.id ? updatedUser : m));
+                  }
+                }}
+              />
               <ClientStories />
               <LocationSchedule />
             </>
@@ -387,9 +436,21 @@ export default function App() {
             <TryUsView onAddLead={handleAddLead} />
           )}
 
-          {/* CLUB FINDER VIEW */}
-          {currentView === 'club-finder' && (
-            <ClubFinderView onOpenTrialModal={handleOpenTrialModal} />
+          {/* CLUB FINDER VIEW & MEMBER SOCIAL COMMUNITY HUB */}
+          {(currentView === 'club-finder' || currentView === 'community') && (
+            <div className="space-y-12">
+              <ClubFinderView onOpenTrialModal={handleOpenTrialModal} />
+              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+                <CommunityFeed 
+                  currentUser={currentUser} 
+                  members={members} 
+                  posts={posts} 
+                  setPosts={setPosts} 
+                  friends={friends} 
+                  setFriends={setFriends} 
+                />
+              </div>
+            </div>
           )}
 
           {/* ABOUT US VIEW */}
@@ -402,27 +463,6 @@ export default function App() {
             <PoliciesView />
           )}
 
-        </main>
-      )}
-
-      {/* VIEW ROLE 2: MEMBER PORTAL */}
-      {activeRole === 'member' && (
-        <main className="w-full max-w-full overflow-x-hidden grow">
-          <MemberPortal 
-            member={currentUser || currentPortalMember} 
-            members={members}
-            posts={posts}
-            setPosts={setPosts}
-            friends={friends}
-            setFriends={setFriends}
-            onRenewPlan={(m) => {
-              setSelectedPlanForCheckout(null);
-              setIsCheckoutModalOpen(true);
-            }}
-            onViewReceipt={handleViewReceipt}
-            onRecordAttendance={handleRecordAttendance}
-            onOpenAuthModal={() => setIsAuthModalOpen(true)}
-          />
         </main>
       )}
 
@@ -441,6 +481,7 @@ export default function App() {
             onViewReceipt={handleViewReceipt}
             onResetData={handleResetData}
             onInjectDemoData={handleInjectDemoData}
+            onRecordAttendance={handleRecordAttendance}
           />
         </main>
       )}
@@ -494,6 +535,20 @@ export default function App() {
         isOpen={isPoliciesModalOpen}
         onClose={() => setIsPoliciesModalOpen(false)}
         policies={gymDetails?.gymPolicies}
+      />
+
+      <AboutModal
+        isOpen={isAboutModalOpen}
+        onClose={() => setIsAboutModalOpen(false)}
+        onOpenTrialModal={handleOpenTrialModal}
+      />
+
+      <RenewPlanModal
+        isOpen={isRenewalModalOpen}
+        onClose={() => setIsRenewalModalOpen(false)}
+        member={renewalMember || currentUser || currentPortalMember}
+        onCompleteRenewal={handleCompleteRenewal}
+        onViewReceipt={handleViewReceipt}
       />
 
       {/* Hidden Root User System Entry Point (Requirement 2) */}

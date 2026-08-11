@@ -180,8 +180,8 @@ export default function TrainWithUsView({ onOpenTrialModal, onSelectPlan }) {
                 {/* CTAs */}
                 <div className="pt-4 flex flex-wrap items-center gap-4">
                   <button
-                    onClick={onOpenTrialModal}
-                    className="bg-lime-400 hover:bg-lime-300 text-black font-extrabold text-xs uppercase tracking-wider px-6 py-3.5 rounded-xl shadow-lg shadow-lime-400/20 transition flex items-center gap-2 transform hover:-translate-y-0.5"
+                    onClick={() => onOpenTrialModal(service)}
+                    className="bg-lime-400 hover:bg-lime-300 text-black font-extrabold text-xs uppercase tracking-wider px-6 py-3.5 rounded-xl shadow-lg shadow-lime-400/20 transition flex items-center gap-2 transform hover:-translate-y-0.5 cursor-pointer"
                   >
                     Try Free 1-Day Pass <ArrowRight className="w-4 h-4" />
                   </button>

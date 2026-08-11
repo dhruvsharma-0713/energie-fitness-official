@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { Ticket, Gift, X, CheckCircle2, User, Phone, Calendar, Clock, ArrowRight, AlertCircle, Tag } from 'lucide-react';
+import { Ticket, Gift, X, CheckCircle2, User, Phone, Calendar, Clock, ArrowRight, AlertCircle, Tag, Zap, Dumbbell } from 'lucide-react';
 
 export default function FreeTrialModal({ isOpen, onClose, onAddLead, selectedDeal }) {
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
-    slot: 'Morning (6 AM - 10 AM)',
+    slot: 'Morning Session (6 AM - 10 AM)',
     date: new Date().toISOString().split('T')[0]
   });
 
@@ -15,6 +15,10 @@ export default function FreeTrialModal({ isOpen, onClose, onAddLead, selectedDea
   const [generatedTicket, setGeneratedTicket] = useState(null);
 
   if (!isOpen) return null;
+
+  // Determine selection type
+  const isFacilitySelection = Boolean(selectedDeal && (selectedDeal.highlights || selectedDeal.category || !selectedDeal.code));
+  const isPromoDealSelection = Boolean(selectedDeal && selectedDeal.code);
 
   const validateForm = () => {
     const errs = {};
@@ -46,21 +50,26 @@ export default function FreeTrialModal({ isOpen, onClose, onAddLead, selectedDea
     setTimeout(() => {
       setIsLoading(false);
       const cleanPhone = formData.phone.replace(/\D/g, '');
-      const ticketId = selectedDeal 
-        ? `EF-DEAL-${Math.floor(100000 + Math.random() * 900000)}`
-        : `EF-TRIAL-${Math.floor(100000 + Math.random() * 900000)}`;
+      const ticketId = isFacilitySelection
+        ? `EF-FAC-${Math.floor(100000 + Math.random() * 900000)}`
+        : isPromoDealSelection
+          ? `EF-DEAL-${Math.floor(100000 + Math.random() * 900000)}`
+          : `EF-TRIAL-${Math.floor(100000 + Math.random() * 900000)}`;
+
+      const facilityTitle = selectedDeal?.title || 'All-Access 1-Day VIP Pass';
+      const promoCode = selectedDeal?.code || 'FREEPASS';
 
       const payload = {
         name: formData.name.trim(),
         phone: `+91 ${cleanPhone}`,
         date: formData.date,
         slot: formData.slot,
-        dealTitle: selectedDeal?.title || '1-Day Free VIP Pass',
-        promoCode: selectedDeal?.code || 'FREEPASS',
-        appliedBenefit: selectedDeal?.desc || '100% Free 1-Day VIP Access Ticket'
+        selectedFacilityTitle: facilityTitle,
+        promoCode: promoCode,
+        appliedBenefit: selectedDeal?.desc || '100% Free 1-Day VIP Access Pass'
       };
 
-      console.log('[Deal Claim / Trial Pass Submitted]', payload);
+      console.log('[1-Day Pass / Facility Trial Submitted]', payload);
 
       const newLeadObj = {
         id: `LD-${Math.floor(500 + Math.random() * 500)}`,
@@ -69,12 +78,14 @@ export default function FreeTrialModal({ isOpen, onClose, onAddLead, selectedDea
         date: formData.date,
         slot: formData.slot,
         status: 'New Lead',
-        note: selectedDeal 
-          ? `Claimed Deal: ${selectedDeal.title} (Code: ${selectedDeal.code})` 
-          : `Generated 1-Day Trial Ticket (${ticketId})`,
-        dealTitle: payload.dealTitle,
-        promoCode: payload.promoCode,
-        appliedBenefit: payload.appliedBenefit
+        note: isFacilitySelection
+          ? `Pre-Selected Facility: ${facilityTitle} (${formData.slot})`
+          : isPromoDealSelection
+            ? `Claimed Deal: ${facilityTitle} (Code: ${promoCode})` 
+            : `Generated 1-Day Trial Ticket (${ticketId})`,
+        dealTitle: facilityTitle,
+        promoCode: promoCode,
+        facilityTitle: facilityTitle
       };
 
       // Automatically push directly into backend database state
@@ -88,7 +99,8 @@ export default function FreeTrialModal({ isOpen, onClose, onAddLead, selectedDea
         phone: `+91 ${cleanPhone}`,
         slot: formData.slot,
         date: formData.date,
-        deal: selectedDeal
+        deal: selectedDeal,
+        facilityTitle
       });
 
       setIsSuccess(true);
@@ -101,7 +113,7 @@ export default function FreeTrialModal({ isOpen, onClose, onAddLead, selectedDea
     setFormData({
       name: '',
       phone: '',
-      slot: 'Morning (6 AM - 10 AM)',
+      slot: 'Morning Session (6 AM - 10 AM)',
       date: new Date().toISOString().split('T')[0]
     });
     setErrors({});
@@ -118,15 +130,27 @@ export default function FreeTrialModal({ isOpen, onClose, onAddLead, selectedDea
         {/* Close Button */}
         <button 
           onClick={handleCloseModal} 
-          className="absolute top-5 right-5 p-2 rounded-xl bg-neutral-900 text-neutral-400 hover:text-white transition border border-neutral-800"
+          className="absolute top-5 right-5 p-2 rounded-xl bg-neutral-900 text-neutral-400 hover:text-white transition border border-neutral-800 cursor-pointer"
         >
           <X className="w-5 h-5" />
         </button>
 
         {!isSuccess ? (
           <>
-            {/* Header */}
-            {selectedDeal ? (
+            {/* Dynamic Modal Header */}
+            {isFacilitySelection ? (
+              <div className="space-y-2">
+                <div className="inline-flex items-center gap-1.5 bg-yellow-400/20 border border-yellow-400/40 px-3 py-1 rounded-full text-yellow-400 text-[10px] font-black uppercase tracking-widest">
+                  <Zap className="w-3.5 h-3.5 text-yellow-400" /> TARGET FACILITY SELECTION
+                </div>
+                <h3 className="text-2xl font-black text-white font-['Outfit'] uppercase">
+                  EXPERIENCE <span className="text-yellow-400">1-DAY TRIAL</span>
+                </h3>
+                <p className="text-xs text-[#b3b3b3]">
+                  Book your pass to test-drive this facility zone with zero obligations.
+                </p>
+              </div>
+            ) : isPromoDealSelection ? (
               <div className="space-y-2">
                 <div className="inline-flex items-center gap-1.5 bg-lime-400/20 border border-lime-400/40 px-3 py-1 rounded-full text-lime-400 text-[10px] font-black uppercase tracking-widest">
                   <Gift className="w-3.5 h-3.5 text-lime-400" /> SPECIAL MEMBERSHIP OFFER
@@ -152,8 +176,37 @@ export default function FreeTrialModal({ isOpen, onClose, onAddLead, selectedDea
               </div>
             )}
 
-            {/* Selected Offer Summary Banner */}
-            {selectedDeal && (
+            {/* PRE-SELECTED FACILITY BANNER */}
+            {isFacilitySelection && (
+              <div className="bg-gradient-to-r from-red-950/40 via-neutral-900 to-yellow-950/40 border-2 border-red-500/50 p-4 rounded-2xl space-y-2 shadow-lg">
+                <div className="flex items-center justify-between gap-2">
+                  <span className="text-[10px] font-black uppercase text-black bg-yellow-400 px-2.5 py-0.5 rounded-full font-mono">
+                    {selectedDeal.category || 'HIGH-PERFORMANCE ZONE'}
+                  </span>
+                  <span className="text-[10px] font-bold text-lime-400 bg-black/80 px-2.5 py-1 rounded-lg border border-lime-400/40">
+                    ✓ 1-Day VIP Trial Access Included
+                  </span>
+                </div>
+                <h4 className="text-sm font-extrabold text-white font-['Outfit'] pt-1">
+                  {selectedDeal.title}
+                </h4>
+                <p className="text-xs text-neutral-300 leading-relaxed">
+                  <strong className="text-yellow-400 font-bold">Zone Focus:</strong> {selectedDeal.desc}
+                </p>
+                {selectedDeal.highlights && (
+                  <div className="flex flex-wrap gap-1.5 pt-1">
+                    {selectedDeal.highlights.slice(0, 3).map((h, i) => (
+                      <span key={i} className="text-[10px] bg-neutral-950 text-neutral-300 px-2 py-0.5 rounded border border-neutral-800 font-medium">
+                        • {h}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* PRE-SELECTED PROMO DEAL BANNER */}
+            {isPromoDealSelection && (
               <div className="bg-gradient-to-r from-lime-400/15 via-neutral-900 to-yellow-400/15 border-2 border-lime-400/40 p-4 rounded-2xl space-y-2 shadow-lg">
                 <div className="flex items-center justify-between gap-2">
                   <span className="text-[10px] font-black uppercase text-black bg-lime-400 px-2.5 py-0.5 rounded-full font-mono">
@@ -194,7 +247,7 @@ export default function FreeTrialModal({ isOpen, onClose, onAddLead, selectedDea
 
               <div>
                 <label className="block text-xs font-black uppercase text-neutral-300 mb-1.5">
-                  Phone / WhatsApp Number *
+                  WhatsApp / Phone Number *
                 </label>
                 <div className="relative">
                   <Phone className="w-4 h-4 text-neutral-500 absolute left-3.5 top-3.5" />
@@ -214,7 +267,7 @@ export default function FreeTrialModal({ isOpen, onClose, onAddLead, selectedDea
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label className="block text-xs font-black uppercase text-neutral-300 mb-1.5">
-                    Target Visit / Claim Date *
+                    Preferred Visit Date *
                   </label>
                   <input 
                     type="date"
@@ -227,15 +280,15 @@ export default function FreeTrialModal({ isOpen, onClose, onAddLead, selectedDea
 
                 <div>
                   <label className="block text-xs font-black uppercase text-neutral-300 mb-1.5">
-                    Preferred Slot *
+                    Time Slot Selection *
                   </label>
                   <select 
                     value={formData.slot}
                     onChange={(e) => setFormData({ ...formData, slot: e.target.value })}
                     className="w-full bg-[#1a1a1a] border border-neutral-800 rounded-xl px-2 py-3 text-xs text-white focus:border-yellow-400 focus:outline-none transition"
                   >
-                    <option value="Morning (6 AM - 10 AM)">Morning (6 AM - 10 AM)</option>
-                    <option value="Evening (5 PM - 9 PM)">Evening (5 PM - 9 PM)</option>
+                    <option value="Morning Session (6 AM - 10 AM)">Morning Session (6 AM - 10 AM)</option>
+                    <option value="Evening Session (5 PM - 9 PM)">Evening Session (5 PM - 9 PM)</option>
                   </select>
                 </div>
               </div>
@@ -244,16 +297,16 @@ export default function FreeTrialModal({ isOpen, onClose, onAddLead, selectedDea
               <button
                 type="submit"
                 disabled={isLoading}
-                className={`w-full ${selectedDeal ? 'bg-lime-400 hover:bg-lime-300 text-black' : 'bg-yellow-400 hover:bg-yellow-300 text-black'} active:scale-[0.98] font-black text-xs uppercase tracking-wider py-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2 cursor-pointer`}
+                className="w-full bg-yellow-400 hover:bg-yellow-300 active:scale-[0.98] text-black font-black text-xs uppercase tracking-wider py-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2 cursor-pointer"
               >
                 {isLoading ? (
                   <div className="flex items-center gap-2">
                     <div className="w-5 h-5 border-2 border-black border-t-transparent rounded-full animate-spin" />
-                    <span>Processing Deal Claim...</span>
+                    <span>Generating Facility Pass...</span>
                   </div>
                 ) : (
                   <>
-                    <span>{selectedDeal ? 'Claim Offer & Reserve Pass' : 'Generate Digital Trial Pass'}</span>
+                    <span>Generate Facility Trial Pass</span>
                     <ArrowRight className="w-4 h-4" />
                   </>
                 )}
@@ -261,21 +314,21 @@ export default function FreeTrialModal({ isOpen, onClose, onAddLead, selectedDea
             </form>
           </>
         ) : (
-          /* Confirmation State with Ticket / Deal Summary */
+          /* Confirmation State with Digital Pass Ticket */
           <div className="space-y-6 text-center">
             <div className="w-14 h-14 rounded-full bg-green-500/20 border border-green-500/40 text-green-400 flex items-center justify-center mx-auto shadow-xl">
               <CheckCircle2 className="w-8 h-8" />
             </div>
 
             <div>
-              <div className="inline-block bg-lime-400 text-black font-black text-[10px] uppercase px-3 py-1 rounded-md mb-2">
-                SAVED TO GYM DATABASE
+              <div className="inline-block bg-yellow-400 text-black font-black text-[10px] uppercase px-3 py-1 rounded-md mb-2">
+                PASS SAVED TO DATABASE
               </div>
               <h3 className="text-2xl font-black text-white font-['Outfit'] uppercase">
-                {generatedTicket.deal ? 'DEAL PASS RESERVED!' : 'TRIAL PASS CONFIRMED!'}
+                TRIAL PASS CONFIRMED!
               </h3>
               <p className="text-xs text-[#b3b3b3] mt-1">
-                Your ticket has been generated and saved into the gym system. Show code <strong className="text-lime-400 font-mono">{generatedTicket.ticketId}</strong> at front desk upon arrival.
+                Your ticket code <strong className="text-yellow-400 font-mono">{generatedTicket.ticketId}</strong> is registered. Present at gym desk upon entry.
               </p>
             </div>
 
@@ -283,32 +336,24 @@ export default function FreeTrialModal({ isOpen, onClose, onAddLead, selectedDea
             <div className="bg-black p-4 rounded-2xl border border-neutral-800 text-left text-xs space-y-2.5">
               <div className="flex justify-between border-b border-neutral-800 pb-2">
                 <span className="text-neutral-400 font-bold">Ticket Code:</span>
-                <strong className="text-lime-400 font-mono">{generatedTicket.ticketId}</strong>
+                <strong className="text-yellow-400 font-mono">{generatedTicket.ticketId}</strong>
               </div>
               <div className="flex justify-between">
-                <span className="text-neutral-400 font-bold">Holder:</span>
+                <span className="text-neutral-400 font-bold">Holder Name:</span>
                 <strong className="text-white">{generatedTicket.name}</strong>
               </div>
               <div className="flex justify-between">
-                <span className="text-neutral-400 font-bold">Mobile:</span>
+                <span className="text-neutral-400 font-bold">WhatsApp / Mobile:</span>
                 <strong className="text-white font-mono">{generatedTicket.phone}</strong>
               </div>
               <div className="flex justify-between">
                 <span className="text-neutral-400 font-bold">Visit Date & Slot:</span>
                 <strong className="text-white">{generatedTicket.date} ({generatedTicket.slot})</strong>
               </div>
-              {generatedTicket.deal && (
-                <div className="border-t border-neutral-800 pt-2 space-y-1">
-                  <div className="flex justify-between">
-                    <span className="text-neutral-400 font-bold">Selected Deal:</span>
-                    <strong className="text-yellow-400 font-['Outfit']">{generatedTicket.deal.title}</strong>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-neutral-400 font-bold">Promo Code:</span>
-                    <strong className="text-lime-400 font-mono">{generatedTicket.deal.code}</strong>
-                  </div>
-                </div>
-              )}
+              <div className="border-t border-neutral-800 pt-2 flex justify-between">
+                <span className="text-neutral-400 font-bold">Pre-Selected Facility:</span>
+                <strong className="text-lime-400 font-['Outfit']">{generatedTicket.facilityTitle}</strong>
+              </div>
             </div>
 
             <button

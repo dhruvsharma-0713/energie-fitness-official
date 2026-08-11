@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { User, QrCode, Calendar, Flame, CheckCircle, Clock, Download, Dumbbell, Award, ArrowRight, ShieldCheck, Heart, Sparkles, Camera, CheckCircle2, AlertCircle, Users, Target, CheckSquare, Plus, FileText } from 'lucide-react';
 import CommunityFeed from './CommunityFeed';
 import LiveQrScannerModal from './LiveQrScannerModal';
+import WorkoutTracker from './WorkoutTracker';
 
 export default function MemberPortal({ 
   member, 
@@ -13,7 +14,10 @@ export default function MemberPortal({
   setPosts, 
   friends = [], 
   setFriends,
-  onOpenAuthModal
+  onOpenAuthModal,
+  onNavigate,
+  currentView,
+  onOpenAboutModal
 }) {
   const [activeTab, setActiveTab] = useState('overview'); // 'overview' | 'workout-today' | 'tracker' | 'questionnaire' | 'community' | 'receipt'
   const [isScannerOpen, setIsScannerOpen] = useState(false);
@@ -182,6 +186,60 @@ export default function MemberPortal({
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8 bg-[#0d0d0d] min-h-screen text-white">
       
+      {/* Top Site-Wide Navigation Header Bar inside Member Portal */}
+      <div className="bg-[#121212] border-b-2 border-neutral-800 p-4 rounded-2xl flex items-center justify-between gap-4 flex-wrap text-xs font-black uppercase shadow-xl">
+        <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
+          <button 
+            type="button"
+            onClick={() => onNavigate && onNavigate('home')}
+            className={`px-3 py-2 rounded-xl transition cursor-pointer ${currentView === 'home' ? 'text-yellow-400 border-b-2 border-yellow-400 font-black' : 'text-neutral-400 hover:text-white'}`}
+          >
+            Home
+          </button>
+          <button 
+            type="button"
+            onClick={() => onNavigate && onNavigate('train-with-us')}
+            className={`px-3 py-2 rounded-xl transition cursor-pointer ${currentView === 'train-with-us' ? 'text-yellow-400 border-b-2 border-yellow-400 font-black' : 'text-neutral-400 hover:text-white'}`}
+          >
+            Services
+          </button>
+          <button 
+            type="button"
+            onClick={() => onNavigate && onNavigate('membership')}
+            className={`px-3 py-2 rounded-xl transition cursor-pointer ${currentView === 'membership' ? 'text-yellow-400 border-b-2 border-yellow-400 font-black' : 'text-neutral-400 hover:text-white'}`}
+          >
+            Memberships & Offers
+          </button>
+          <button 
+            type="button"
+            onClick={() => onNavigate && onNavigate('club-finder')}
+            className={`px-3 py-2 rounded-xl transition cursor-pointer ${currentView === 'club-finder' ? 'text-yellow-400 border-b-2 border-yellow-400 font-black' : 'text-neutral-400 hover:text-white'}`}
+          >
+            Club Finder
+          </button>
+          <button 
+            type="button"
+            onClick={() => onOpenAboutModal ? onOpenAboutModal() : (onNavigate && onNavigate('about'))}
+            className={`px-3 py-2 rounded-xl transition cursor-pointer ${currentView === 'about' ? 'text-yellow-400 border-b-2 border-yellow-400 font-black' : 'text-neutral-400 hover:text-white'}`}
+          >
+            About Us
+          </button>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <span className="text-[10px] text-lime-400 font-bold bg-lime-400/10 px-2.5 py-1 rounded-lg border border-lime-400/30">
+            ⚡ Member Session Active ({member?.name?.split(' ')[0]})
+          </span>
+          <button
+            type="button"
+            onClick={() => onRenewPlan && onRenewPlan(member)}
+            className="bg-yellow-400 hover:bg-yellow-300 text-black px-3.5 py-1.5 rounded-xl font-black text-xs uppercase transition shadow-md cursor-pointer"
+          >
+            Renew / Upgrade Plan
+          </button>
+        </div>
+      </div>
+      
       {/* Attendance Toast */}
       {scanToast && (
         <div className={`p-4 rounded-2xl border flex items-center justify-between text-xs font-black uppercase tracking-wider shadow-2xl transition ${
@@ -224,10 +282,17 @@ export default function MemberPortal({
         {/* Action Buttons */}
         <div className="flex flex-wrap items-center gap-3 relative z-10">
           <button 
-            onClick={() => setIsScannerOpen(true)}
-            className="bg-yellow-400 hover:bg-yellow-300 text-black font-black py-2.5 px-4 rounded-xl text-xs uppercase tracking-wider shadow-lg shadow-yellow-400/20 transition flex items-center gap-2"
+            onClick={() => onRenewPlan && onRenewPlan(member)}
+            className="bg-yellow-400 hover:bg-yellow-300 text-black font-black py-2.5 px-4 rounded-xl text-xs uppercase tracking-wider shadow-lg shadow-yellow-400/20 transition flex items-center gap-2 cursor-pointer transform hover:-translate-y-0.5"
           >
-            <Camera className="w-4 h-4" /> Live Camera Check-In
+            <Sparkles className="w-4 h-4 fill-black text-black" /> Renew / Upgrade Plan
+          </button>
+
+          <button 
+            onClick={() => setIsScannerOpen(true)}
+            className="bg-neutral-900 hover:bg-neutral-800 text-white font-bold py-2.5 px-4 rounded-xl text-xs uppercase tracking-wider border border-neutral-700 transition flex items-center gap-2 cursor-pointer"
+          >
+            <Camera className="w-4 h-4 text-yellow-400" /> Live Camera Check-In
           </button>
         </div>
       </div>
@@ -385,48 +450,10 @@ export default function MemberPortal({
 
       {/* TAB 3: WORKOUT TRACKER */}
       {activeTab === 'tracker' && (
-        <div className="bg-[#121212] border border-neutral-800 p-6 md:p-8 rounded-3xl space-y-6 shadow-xl">
-          <div className="flex items-center justify-between border-b border-neutral-800 pb-4">
-            <h3 className="text-xl font-black text-white font-['Outfit'] uppercase flex items-center gap-2">
-              <CheckSquare className="w-5 h-5 text-yellow-400" /> Interactive Logged Session
-            </h3>
-            {isSessionSaved && <span className="text-xs text-emerald-400 font-bold">Session Saved to Profile!</span>}
-          </div>
-
-          <div className="space-y-3">
-            {['Incline Barbell Press', 'Lat Pulldowns', 'Barbell Squats', 'Overhead Shoulder Press'].map((ex, idx) => (
-              <div key={idx} className="bg-neutral-900 p-4 rounded-2xl border border-neutral-800 flex items-center justify-between text-xs">
-                <span className="font-bold text-white">{ex} (4 sets x 12 reps)</span>
-                <input
-                  type="checkbox"
-                  onChange={(e) => setLoggedExercises({ ...loggedExercises, [ex]: e.target.checked })}
-                  className="w-5 h-5 accent-yellow-400 cursor-pointer"
-                />
-              </div>
-            ))}
-          </div>
-
-          <div>
-            <label className="text-xs font-bold text-neutral-400 block mb-1">Session Notes & Weight Lifted</label>
-            <textarea
-              rows="3"
-              placeholder="e.g. Hit 80kg Bench PR today!"
-              value={sessionNotes}
-              onChange={(e) => setSessionNotes(e.target.value)}
-              className="w-full bg-black border border-neutral-800 rounded-2xl p-3 text-xs text-white outline-none resize-none"
-            />
-          </div>
-
-          <button
-            onClick={() => {
-              setIsSessionSaved(true);
-              setTimeout(() => setIsSessionSaved(false), 3000);
-            }}
-            className="bg-yellow-400 hover:bg-yellow-300 text-black font-black uppercase text-xs px-6 py-3 rounded-xl transition"
-          >
-            Save Today's Logged Session
-          </button>
-        </div>
+        <WorkoutTracker 
+          member={member} 
+          onRecordAttendance={onRecordAttendance} 
+        />
       )}
 
       {/* TAB 4: COMMUNITY FEED */}

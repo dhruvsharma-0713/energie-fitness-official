@@ -9,16 +9,14 @@ export default function ClubFinderView({ onOpenTrialModal }) {
       
       {/* Header */}
       <section className="relative py-16 md:py-24 bg-gradient-to-b from-neutral-900 via-neutral-950 to-black border-b border-neutral-800 text-center overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="inline-flex items-center gap-2 bg-lime-400/10 border border-lime-400/30 px-4 py-1.5 rounded-full text-lime-400 text-xs font-black uppercase tracking-widest mb-6">
-            <MapPin className="w-4 h-4" /> Official Club Finder
-          </div>
-
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-black uppercase tracking-tight font-['Outfit']">
-            OUR CLUB <span className="text-transparent bg-clip-text bg-gradient-to-r from-lime-400 to-emerald-400">BULANDSHAHR</span>
+        <div className="text-center max-w-3xl mx-auto mb-10 px-4 space-y-4 relative z-10">
+          <span className="inline-block px-4 py-1.5 rounded-full border border-lime-500/30 text-lime-400 text-xs font-semibold uppercase tracking-wider mb-2">
+            📍 Official Club Finder
+          </span>
+          <h1 className="text-4xl sm:text-6xl font-black text-white uppercase tracking-tight font-['Outfit'] leading-tight">
+            OUR <span className="text-yellow-400">CLUB</span>
           </h1>
-
-          <p className="text-neutral-400 text-base md:text-xl max-w-2xl mx-auto mt-4 leading-relaxed font-medium">
+          <p className="text-zinc-400 text-base sm:text-lg max-w-2xl mx-auto">
             Discover Bulandshahr’s highest-rated fitness club. Located conveniently at Shikarpur Bypass Road with top-tier equipment and spacious CrossFit arena.
           </p>
         </div>

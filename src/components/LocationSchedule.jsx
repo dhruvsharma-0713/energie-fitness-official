@@ -8,13 +8,15 @@ export default function LocationSchedule() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto space-y-4 mb-14">
-          <span className="badge badge-purple uppercase font-mono tracking-widest">Location & Timings</span>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white uppercase font-['Outfit']">
-            VISIT US IN <span className="text-lime-400">BULANDSHAHR</span>
+        <div className="text-center max-w-3xl mx-auto mb-10 px-4 space-y-4">
+          <span className="inline-block px-4 py-1.5 rounded-full border border-lime-500/30 text-lime-400 text-xs font-semibold uppercase tracking-wider mb-2">
+            📍 Official Club Finder
+          </span>
+          <h2 className="text-4xl sm:text-6xl font-black text-white uppercase tracking-tight font-['Outfit'] leading-tight">
+            OUR <span className="text-yellow-400">CLUB</span>
           </h2>
-          <p className="text-neutral-400 text-sm sm:text-base">
-            Conveniently situated on Shikarpur Bypass Road near Tanda / Bhoor.
+          <p className="text-zinc-400 text-base sm:text-lg max-w-2xl mx-auto">
+            Discover Bulandshahr’s highest-rated fitness club. Located conveniently on Shikarpur Bypass Road near Tanda / Bhoor.
           </p>
         </div>
 

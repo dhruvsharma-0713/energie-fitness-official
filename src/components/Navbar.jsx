@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Dumbbell, Menu, X, UserCheck, LogOut, ChevronDown, MapPin, Phone, MessageSquare, Ticket, Sparkles, Clock, LogIn, ShieldAlert, FileText, MoreVertical, Info, Compass, ShieldCheck } from 'lucide-react';
+import { Dumbbell, Menu, X, UserCheck, LogOut, ChevronDown, MapPin, Phone, MessageSquare, Ticket, Sparkles, Clock, LogIn, ShieldAlert, FileText, MoreVertical, Info, Compass, ShieldCheck, LayoutDashboard } from 'lucide-react';
 import { GYM_DETAILS } from '../data/mockData';
 
 export default function Navbar({ 
@@ -10,6 +10,7 @@ export default function Navbar({
   onOpenTrialModal, 
   onOpenAuthModal,
   onOpenPoliciesModal,
+  onOpenAboutModal,
   currentUser,
   onUserLogout,
   onLogoutAdmin,
@@ -22,6 +23,9 @@ export default function Navbar({
   const moreMenuRef = useRef(null);
 
   const isAuthenticatedMember = Boolean(currentUser) || activeRole === 'member';
+  const isAdminView = activeRole === 'admin' || currentView === 'admin' || currentView === 'coach-ravi-desk';
+  const isMemberDashboard = currentView === 'portal' || currentView === 'dashboard' || currentView === 'member' || (activeRole === 'member' && !['home', 'train-with-us', 'membership', 'try-us', 'club-finder', 'about', 'policies'].includes(currentView));
+  const isDashboardView = isMemberDashboard || isAdminView;
 
   useEffect(() => {
     // Secret keyboard shortcut Ctrl + Shift + R for Root User Entry Point
@@ -126,35 +130,37 @@ export default function Navbar({
             </div>
           </div>
 
-          {/* Primary Navigation Menu */}
-          <nav className="hidden lg:flex items-center gap-6 xl:gap-8 text-xs xl:text-sm font-black uppercase tracking-wider text-white">
-            <button 
-              onClick={() => handleNavClick('home')}
-              className={`hover:text-yellow-400 transition py-1 ${currentView === 'home' && activeRole === 'visitor' ? 'text-yellow-400 border-b-2 border-yellow-400' : ''}`}
-            >
-              Home
-            </button>
+          {/* Primary Navigation Menu (Hidden when in Member Dashboard View) */}
+          {!isDashboardView && (
+            <nav className="hidden lg:flex items-center gap-6 xl:gap-8 text-xs xl:text-sm font-black uppercase tracking-wider text-white">
+              <button 
+                onClick={() => handleNavClick('home')}
+                className={`hover:text-yellow-400 transition py-1 ${currentView === 'home' && activeRole === 'visitor' ? 'text-yellow-400 border-b-2 border-yellow-400' : ''}`}
+              >
+                Home
+              </button>
 
-            <button 
-              onClick={() => handleNavClick('train-with-us')}
-              className={`hover:text-yellow-400 transition py-1 ${currentView === 'train-with-us' ? 'text-yellow-400 border-b-2 border-yellow-400' : ''}`}
-            >
-              Services
-            </button>
+              <button 
+                onClick={() => handleNavClick('train-with-us')}
+                className={`hover:text-yellow-400 transition py-1 ${currentView === 'train-with-us' ? 'text-yellow-400 border-b-2 border-yellow-400' : ''}`}
+              >
+                Services
+              </button>
 
-            <button 
-              onClick={() => handleNavClick('membership')}
-              className={`hover:text-yellow-400 transition py-1 ${currentView === 'membership' ? 'text-yellow-400 border-b-2 border-yellow-400' : ''}`}
-            >
-              Memberships & Offers
-            </button>
-          </nav>
+              <button 
+                onClick={() => handleNavClick('membership')}
+                className={`hover:text-yellow-400 transition py-1 ${currentView === 'membership' ? 'text-yellow-400 border-b-2 border-yellow-400' : ''}`}
+              >
+                Memberships & Offers
+              </button>
+            </nav>
+          )}
 
           {/* Desktop Right Actions Container */}
           <div className="hidden lg:flex items-center gap-3 shrink-0">
             
             {/* CTA 1: Try Free Pass (EXCLUSIVELY for unauthenticated visitors) */}
-            {!isAuthenticatedMember && (
+            {!isAuthenticatedMember && !isAdminView && (
               <button 
                 onClick={() => handleNavClick('try-us')} 
                 className="bg-yellow-400 hover:bg-yellow-300 text-black font-black text-xs uppercase tracking-wider px-5 py-2.5 rounded-xl shadow-lg shadow-yellow-400/20 transition-all transform hover:-translate-y-0.5 flex items-center gap-1.5 shrink-0"
@@ -183,37 +189,65 @@ export default function Navbar({
               <div className="relative">
                 <button
                   onClick={() => setUserDropdownOpen(!userDropdownOpen)}
-                  className="bg-neutral-900 hover:bg-neutral-800 border border-yellow-400/50 text-white font-extrabold text-xs px-3.5 py-2 rounded-xl transition flex items-center gap-2"
+                  className="bg-yellow-400 hover:bg-yellow-300 text-black font-extrabold text-xs px-4 py-2.5 rounded-xl shadow-lg shadow-yellow-400/20 transition flex items-center gap-2 cursor-pointer transform hover:-translate-y-0.5"
                 >
-                  <div className="w-6 h-6 rounded-full bg-yellow-400 text-black flex items-center justify-center font-black text-xs font-['Outfit']">
+                  <div className="w-6 h-6 rounded-full bg-black text-yellow-400 flex items-center justify-center font-black text-xs font-['Outfit'] shadow-md">
                     {currentUser.name.charAt(0)}
                   </div>
-                  <span>{currentUser.name.split(' ')[0]}</span>
+                  <div className="flex items-center gap-1.5 font-black">
+                    <span>{currentUser.name.split(' ')[0]}</span>
+                    <span className="w-2 h-2 rounded-full bg-emerald-600 animate-pulse" />
+                  </div>
                   {currentUser.subRole === 'Staff / Trainer' && (
                     <span className="bg-red-600 text-white text-[8px] font-black uppercase px-1.5 py-0.5 rounded">STAFF</span>
                   )}
-                  <ChevronDown className="w-3.5 h-3.5 text-yellow-400" />
+                  <ChevronDown className="w-3.5 h-3.5 text-black" />
                 </button>
 
                 {userDropdownOpen && (
-                  <div className="absolute right-0 top-full mt-2 w-52 bg-[#121212] border border-neutral-800 rounded-2xl shadow-2xl p-2 space-y-1 z-50 text-xs">
+                  <div className="absolute right-0 top-full mt-2 w-60 bg-[#121212] border-2 border-yellow-400/60 rounded-2xl shadow-2xl p-2.5 space-y-1 z-50 text-xs animate-fade-in backdrop-blur-xl">
+                    <div className="px-3 py-1.5 border-b border-neutral-800 text-[10px] font-black uppercase text-yellow-400 tracking-wider">
+                      Member Account Session
+                    </div>
+
+                    {/* Explicit Top Item 1: Go to My Dashboard */}
                     <button
                       onClick={() => {
                         setActiveRole('member');
+                        setCurrentView('portal');
                         setUserDropdownOpen(false);
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
                       }}
-                      className="w-full text-left px-3 py-2.5 rounded-xl hover:bg-neutral-900 text-yellow-400 font-extrabold flex items-center gap-2"
+                      className="w-full text-left px-3 py-2.5 rounded-xl bg-yellow-400/15 hover:bg-yellow-400/25 text-yellow-400 font-extrabold flex items-center gap-2.5 transition cursor-pointer"
                     >
-                      <UserCheck className="w-4 h-4" /> View My Digital Pass
+                      <LayoutDashboard className="w-4 h-4 text-yellow-400" />
+                      <span>Go to My Dashboard</span>
                     </button>
+
+                    {/* Item 2: View My Digital Pass */}
+                    <button
+                      onClick={() => {
+                        setActiveRole('member');
+                        setCurrentView('portal');
+                        setUserDropdownOpen(false);
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                      }}
+                      className="w-full text-left px-3 py-2.5 rounded-xl hover:bg-neutral-900 text-neutral-200 hover:text-white font-bold flex items-center gap-2.5 transition cursor-pointer"
+                    >
+                      <UserCheck className="w-4 h-4 text-lime-400" />
+                      <span>View My Digital Pass</span>
+                    </button>
+
+                    {/* Item 3: Log Out */}
                     <button
                       onClick={() => {
                         onUserLogout();
                         setUserDropdownOpen(false);
                       }}
-                      className="w-full text-left px-3 py-2 rounded-xl hover:bg-red-950/40 text-red-400 font-bold flex items-center gap-2"
+                      className="w-full text-left px-3 py-2 rounded-xl hover:bg-red-950/40 text-red-400 font-bold flex items-center gap-2.5 transition cursor-pointer"
                     >
-                      <LogOut className="w-4 h-4" /> Log Out
+                      <LogOut className="w-4 h-4 text-red-400" />
+                      <span>Log Out</span>
                     </button>
                   </div>
                 )}
@@ -227,78 +261,106 @@ export default function Navbar({
               </button>
             )}
 
-            {/* SECONDARY NAVIGATION: Sleek Three-Dots Dropdown Menu (⋮) */}
-            <div className="relative" ref={moreMenuRef}>
-              <button
-                onClick={() => setMoreMenuOpen(!moreMenuOpen)}
-                className={`p-2.5 rounded-xl border transition-all flex items-center justify-center ${
-                  moreMenuOpen 
-                    ? 'bg-yellow-400 text-black border-yellow-400 shadow-lg shadow-yellow-400/20' 
-                    : 'bg-neutral-900 hover:bg-neutral-800 border-neutral-800 text-neutral-300 hover:text-white'
-                }`}
-                aria-label="More Navigation Options"
-                title="Secondary Navigation Menu"
-              >
-                <MoreVertical className="w-5 h-5 stroke-[2.5]" />
-              </button>
+            {/* SECONDARY NAVIGATION: Sleek Three-Dots Dropdown Menu (⋮) - Hidden on Member Dashboard View, Visible on Public & Admin Views */}
+            {!isMemberDashboard && (
+              <div className="relative" ref={moreMenuRef}>
+                <button
+                  onClick={() => setMoreMenuOpen(!moreMenuOpen)}
+                  className={`p-2.5 rounded-xl border transition-all flex items-center justify-center ${
+                    moreMenuOpen 
+                      ? 'bg-yellow-400 text-black border-yellow-400 shadow-lg shadow-yellow-400/20' 
+                      : 'bg-neutral-900 hover:bg-neutral-800 border-neutral-800 text-neutral-300 hover:text-white'
+                  }`}
+                  aria-label="More Navigation Options"
+                  title="Secondary Navigation Menu"
+                >
+                  <MoreVertical className="w-5 h-5 stroke-[2.5]" />
+                </button>
 
-              {/* Three-Dots Dark Dropdown Popup */}
-              {moreMenuOpen && (
-                <div className="absolute right-0 top-full mt-2 w-60 bg-[#121212] border-2 border-red-600/60 rounded-2xl shadow-2xl p-2.5 space-y-1 z-50 text-xs animate-fade-in backdrop-blur-xl">
-                  <div className="px-3 py-1.5 border-b border-neutral-800 text-[10px] font-black uppercase text-yellow-400 tracking-wider">
-                    Explore Sections
-                  </div>
+                {/* Three-Dots Dark Dropdown Popup */}
+                {moreMenuOpen && (
+                  <div className="absolute right-0 top-full mt-2 w-60 bg-[#121212] border-2 border-red-600/60 rounded-2xl shadow-2xl p-2.5 space-y-1 z-50 text-xs animate-fade-in backdrop-blur-xl">
+                    <div className="px-3 py-1.5 border-b border-neutral-800 text-[10px] font-black uppercase text-yellow-400 tracking-wider">
+                      Explore Sections
+                    </div>
 
-                  {/* Secondary Item 1: Try Us (ONLY for unauthenticated visitors) */}
-                  {!isAuthenticatedMember && (
+                    {/* Secondary Item 0: Go to My Dashboard (For logged-in members) */}
+                    {currentUser && (
+                      <button
+                        onClick={() => {
+                          setActiveRole('member');
+                          setCurrentView('portal');
+                          setMoreMenuOpen(false);
+                          window.scrollTo({ top: 0, behavior: 'smooth' });
+                        }}
+                        className="w-full text-left px-3 py-2.5 rounded-xl font-bold bg-yellow-400/20 text-yellow-400 border border-yellow-400/40 flex items-center gap-2.5 transition cursor-pointer"
+                      >
+                        <LayoutDashboard className="w-4 h-4 text-yellow-400" />
+                        <span>Go to My Dashboard ({currentUser.name.split(' ')[0]})</span>
+                      </button>
+                    )}
+
+                    {/* Secondary Item 1: Try Us (ONLY for unauthenticated visitors) */}
+                    {!isAuthenticatedMember && (
+                      <button
+                        onClick={() => handleNavClick('try-us')}
+                        className={`w-full text-left px-3 py-2.5 rounded-xl font-bold flex items-center gap-2.5 transition ${
+                          currentView === 'try-us' ? 'bg-yellow-400/20 text-yellow-400 border border-yellow-400/40' : 'hover:bg-neutral-900 text-neutral-200 hover:text-white'
+                        }`}
+                      >
+                        <Ticket className="w-4 h-4 text-yellow-400" />
+                        <span>Try Us (Free Pass)</span>
+                      </button>
+                    )}
+
+                    {/* Secondary Item 2: Club Finder */}
                     <button
-                      onClick={() => handleNavClick('try-us')}
+                      onClick={() => {
+                        setMoreMenuOpen(false);
+                        handleNavClick('club-finder');
+                      }}
                       className={`w-full text-left px-3 py-2.5 rounded-xl font-bold flex items-center gap-2.5 transition ${
-                        currentView === 'try-us' ? 'bg-yellow-400/20 text-yellow-400 border border-yellow-400/40' : 'hover:bg-neutral-900 text-neutral-200 hover:text-white'
+                        currentView === 'club-finder' ? 'bg-yellow-400/20 text-yellow-400 border border-yellow-400/40' : 'hover:bg-neutral-900 text-neutral-200 hover:text-white'
                       }`}
                     >
-                      <Ticket className="w-4 h-4 text-yellow-400" />
-                      <span>Try Us (Free Pass)</span>
+                      <Compass className="w-4 h-4 text-red-500" />
+                      <span>Club Finder (Bulandshahr)</span>
                     </button>
-                  )}
 
-                  {/* Secondary Item 2: Club Finder */}
-                  <button
-                    onClick={() => handleNavClick('club-finder')}
-                    className={`w-full text-left px-3 py-2.5 rounded-xl font-bold flex items-center gap-2.5 transition ${
-                      currentView === 'club-finder' ? 'bg-yellow-400/20 text-yellow-400 border border-yellow-400/40' : 'hover:bg-neutral-900 text-neutral-200 hover:text-white'
-                    }`}
-                  >
-                    <Compass className="w-4 h-4 text-red-500" />
-                    <span>Club Finder (Bulandshahr)</span>
-                  </button>
+                    {/* Secondary Item 3: About Us */}
+                    <button
+                      onClick={() => {
+                        setMoreMenuOpen(false);
+                        if (onOpenAboutModal) {
+                          onOpenAboutModal();
+                        } else {
+                          handleNavClick('about');
+                        }
+                      }}
+                      className={`w-full text-left px-3 py-2.5 rounded-xl font-bold flex items-center gap-2.5 transition ${
+                        currentView === 'about' ? 'bg-yellow-400/20 text-yellow-400 border border-yellow-400/40' : 'hover:bg-neutral-900 text-neutral-200 hover:text-white'
+                      }`}
+                    >
+                      <Info className="w-4 h-4 text-yellow-400" />
+                      <span>About Us</span>
+                    </button>
 
-                  {/* Secondary Item 3: About Us */}
-                  <button
-                    onClick={() => handleNavClick('about')}
-                    className={`w-full text-left px-3 py-2.5 rounded-xl font-bold flex items-center gap-2.5 transition ${
-                      currentView === 'about' ? 'bg-yellow-400/20 text-yellow-400 border border-yellow-400/40' : 'hover:bg-neutral-900 text-neutral-200 hover:text-white'
-                    }`}
-                  >
-                    <Info className="w-4 h-4 text-yellow-400" />
-                    <span>About Us</span>
-                  </button>
+                    {/* Secondary Item 4: Policies & Rules Modal */}
+                    <button
+                      onClick={() => {
+                        setMoreMenuOpen(false);
+                        onOpenPoliciesModal();
+                      }}
+                      className="w-full text-left px-3 py-2.5 rounded-xl font-bold flex items-center gap-2.5 hover:bg-neutral-900 text-neutral-200 hover:text-white transition"
+                    >
+                      <FileText className="w-4 h-4 text-red-500" />
+                      <span>Policies & Rules</span>
+                    </button>
 
-                  {/* Secondary Item 4: Policies & Rules Modal */}
-                  <button
-                    onClick={() => {
-                      setMoreMenuOpen(false);
-                      onOpenPoliciesModal();
-                    }}
-                    className="w-full text-left px-3 py-2.5 rounded-xl font-bold flex items-center gap-2.5 hover:bg-neutral-900 text-neutral-200 hover:text-white transition"
-                  >
-                    <FileText className="w-4 h-4 text-red-500" />
-                    <span>Policies & Rules</span>
-                  </button>
-
-                </div>
-              )}
-            </div>
+                  </div>
+                )}
+              </div>
+            )}
 
           </div>
 
@@ -349,10 +411,15 @@ export default function Navbar({
             
             {currentUser ? (
               <button 
-                onClick={() => { setActiveRole('member'); setMobileMenuOpen(false); }} 
-                className="w-full bg-neutral-900 text-yellow-400 border border-yellow-400/40 py-3 rounded-xl text-center justify-center flex items-center gap-2 font-black"
+                onClick={() => { 
+                  setActiveRole('member'); 
+                  setCurrentView('portal'); 
+                  setMobileMenuOpen(false); 
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }} 
+                className="w-full bg-yellow-400 text-black font-black py-3.5 rounded-xl text-center justify-center flex items-center gap-2 shadow-lg shadow-yellow-400/20 cursor-pointer"
               >
-                <UserCheck className="w-4 h-4" /> My Digital Pass ({currentUser.name.split(' ')[0]})
+                <LayoutDashboard className="w-4.5 h-4.5" /> MY DASHBOARD ({currentUser.name.split(' ')[0]})
               </button>
             ) : (
               <button 

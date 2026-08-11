@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Users, UserPlus, QrCode, CreditCard, Flame, TrendingUp, Search, Plus, Filter, CheckCircle2, AlertCircle, Phone, MessageCircle, Download, Sparkles, RefreshCw, BarChart2, ShieldCheck, Heart, X, Eye, Calendar, Award, Printer, Edit, Trash2, Tag, Settings, Layers, FileText } from 'lucide-react';
 import EditMemberModal from './EditMemberModal';
+import LiveQrScannerModal from './LiveQrScannerModal';
 
 export default function AdminDashboard({ 
   members, 
@@ -13,7 +14,8 @@ export default function AdminDashboard({
   setGymDetails,
   onViewReceipt, 
   onResetData, 
-  onInjectDemoData 
+  onInjectDemoData,
+  onRecordAttendance 
 }) {
   const [adminTab, setAdminTab] = useState('members'); // 'members' | 'cms-plans' | 'cms-services' | 'cms-discounts' | 'cms-policies' | 'leads' | 'transactions'
   const [searchTerm, setSearchTerm] = useState('');
@@ -822,6 +824,18 @@ export default function AdminDashboard({
           </div>
         </div>
       )}
+
+      {/* Gym QR Station & Scanner Modal */}
+      <LiveQrScannerModal
+        isOpen={showUniversalQrModal}
+        onClose={() => setShowUniversalQrModal(false)}
+        members={members}
+        onScanSuccess={(mId) => {
+          if (onRecordAttendance) {
+            onRecordAttendance(mId);
+          }
+        }}
+      />
 
     </div>
   );

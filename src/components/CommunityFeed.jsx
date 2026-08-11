@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { MessageSquare, Heart, Share2, UserPlus, UserCheck, ShieldCheck, Sparkles, Send, Flame, Trophy, Dumbbell, Image, Plus } from 'lucide-react';
+import { MessageSquare, Heart, Share2, UserPlus, UserCheck, ShieldCheck, Sparkles, Send, Flame, Trophy, Dumbbell, Image, Plus, Clock, MessageCircle, X } from 'lucide-react';
 
 export default function CommunityFeed({ currentUser, members = [], posts = [], setPosts, friends = [], setFriends }) {
   const [activeTab, setActiveTab] = useState('feed'); // 'feed' | 'my-friends' | 'find-buddies'
@@ -7,6 +7,26 @@ export default function CommunityFeed({ currentUser, members = [], posts = [], s
   const [newPostCategory, setNewPostCategory] = useState('Physique Progress');
   const [newPostImage, setNewPostImage] = useState('');
   const [commentInput, setCommentInput] = useState({});
+
+  // Friend Request States: { [memberId]: 'none' | 'pending' | 'connected' }
+  const [requestStates, setRequestStates] = useState(() => {
+    const initial = {};
+    friends.forEach(id => { initial[id] = 'connected'; });
+    return initial;
+  });
+
+  // Slide-over Chat Drawer State
+  const [activeChatMember, setActiveChatMember] = useState(null);
+  const [chatInput, setChatInput] = useState('');
+  const [chatLogs, setChatLogs] = useState({
+    'EF-1002': [
+      { id: 1, sender: 'them', text: 'Hey brother! Are you coming for the 6 PM CrossFit session today?', time: '05:15 PM' },
+      { id: 2, sender: 'me', text: 'Yes! Doing heavy deadlifts and battle ropes today.', time: '05:18 PM' }
+    ],
+    'EF-1003': [
+      { id: 1, sender: 'them', text: 'Hi! Loved your bench press PR update on the community feed.', time: 'Yesterday' }
+    ]
+  });
 
   const handleCreatePost = (e) => {
     e.preventDefault();
@@ -69,12 +89,48 @@ export default function CommunityFeed({ currentUser, members = [], posts = [], s
     setCommentInput({ ...commentInput, [postId]: '' });
   };
 
-  const handleToggleFriend = (memberId) => {
-    if (friends.includes(memberId)) {
-      setFriends(friends.filter(id => id !== memberId));
-    } else {
-      setFriends([...friends, memberId]);
+  // Three-state friend request logic: none -> pending -> connected
+  const handleFriendRequestClick = (memberId) => {
+    const currentState = requestStates[memberId] || (friends.includes(memberId) ? 'connected' : 'none');
+
+    if (currentState === 'none') {
+      // Transition to Pending
+      setRequestStates(prev => ({ ...prev, [memberId]: 'pending' }));
+      
+      // Auto-approve after 1.5s to demonstrate 'Connected' state
+      setTimeout(() => {
+        setRequestStates(prev => ({ ...prev, [memberId]: 'connected' }));
+        if (!friends.includes(memberId)) setFriends(prev => [...prev, memberId]);
+      }, 1500);
+    } else if (currentState === 'pending') {
+      // Force immediate approval
+      setRequestStates(prev => ({ ...prev, [memberId]: 'connected' }));
+      if (!friends.includes(memberId)) setFriends(prev => [...prev, memberId]);
+    } else if (currentState === 'connected') {
+      // Toggle off / Disconnect
+      setRequestStates(prev => ({ ...prev, [memberId]: 'none' }));
+      setFriends(prev => prev.filter(id => id !== memberId));
     }
+  };
+
+  const handleSendChatMessage = (e) => {
+    e.preventDefault();
+    if (!chatInput.trim() || !activeChatMember) return;
+
+    const memberId = activeChatMember.id;
+    const msg = {
+      id: Date.now(),
+      sender: 'me',
+      text: chatInput.trim(),
+      time: 'Just now'
+    };
+
+    setChatLogs(prev => ({
+      ...prev,
+      [memberId]: [...(prev[memberId] || []), msg]
+    }));
+
+    setChatInput('');
   };
 
   const filteredPosts = activeTab === 'my-friends'
@@ -82,7 +138,7 @@ export default function CommunityFeed({ currentUser, members = [], posts = [], s
     : posts;
 
   return (
-    <div className="space-y-8 text-white">
+    <div className="space-y-8 text-white relative">
       
       {/* Header Banner */}
       <div className="bg-gradient-to-r from-red-950/60 via-neutral-900 to-yellow-950/40 p-6 md:p-8 rounded-3xl border border-red-600/30 shadow-2xl flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
@@ -102,19 +158,19 @@ export default function CommunityFeed({ currentUser, members = [], posts = [], s
         <div className="flex items-center bg-black/60 p-1.5 rounded-2xl border border-neutral-800 text-xs font-black uppercase">
           <button
             onClick={() => setActiveTab('feed')}
-            className={`px-4 py-2.5 rounded-xl transition ${activeTab === 'feed' ? 'bg-yellow-400 text-black shadow-md' : 'text-neutral-400 hover:text-white'}`}
+            className={`px-4 py-2.5 rounded-xl transition cursor-pointer ${activeTab === 'feed' ? 'bg-yellow-400 text-black shadow-md' : 'text-neutral-400 hover:text-white'}`}
           >
             All Feed
           </button>
           <button
             onClick={() => setActiveTab('my-friends')}
-            className={`px-4 py-2.5 rounded-xl transition ${activeTab === 'my-friends' ? 'bg-yellow-400 text-black shadow-md' : 'text-neutral-400 hover:text-white'}`}
+            className={`px-4 py-2.5 rounded-xl transition cursor-pointer ${activeTab === 'my-friends' ? 'bg-yellow-400 text-black shadow-md' : 'text-neutral-400 hover:text-white'}`}
           >
             Friends ({friends.length})
           </button>
           <button
             onClick={() => setActiveTab('find-buddies')}
-            className={`px-4 py-2.5 rounded-xl transition ${activeTab === 'find-buddies' ? 'bg-yellow-400 text-black shadow-md' : 'text-neutral-400 hover:text-white'}`}
+            className={`px-4 py-2.5 rounded-xl transition cursor-pointer ${activeTab === 'find-buddies' ? 'bg-yellow-400 text-black shadow-md' : 'text-neutral-400 hover:text-white'}`}
           >
             Find Buddies
           </button>
@@ -174,7 +230,7 @@ export default function CommunityFeed({ currentUser, members = [], posts = [], s
 
                   <button
                     type="submit"
-                    className="bg-yellow-400 hover:bg-yellow-300 text-black font-black text-xs uppercase px-5 py-2.5 rounded-xl transition flex items-center gap-1.5 shadow-lg shadow-yellow-400/20"
+                    className="bg-yellow-400 hover:bg-yellow-300 text-black font-black text-xs uppercase px-5 py-2.5 rounded-xl transition flex items-center gap-1.5 shadow-lg shadow-yellow-400/20 cursor-pointer"
                   >
                     <Send className="w-3.5 h-3.5" /> Share Post
                   </button>
@@ -243,7 +299,7 @@ export default function CommunityFeed({ currentUser, members = [], posts = [], s
                     <div className="pt-3 border-t border-neutral-800 flex items-center justify-between text-xs">
                       <button
                         onClick={() => handleLikePost(post.id)}
-                        className={`flex items-center gap-1.5 font-extrabold px-3 py-1.5 rounded-xl transition ${
+                        className={`flex items-center gap-1.5 font-extrabold px-3 py-1.5 rounded-xl transition cursor-pointer ${
                           isLiked ? 'bg-red-600/20 text-red-500 border border-red-500/40' : 'text-neutral-400 hover:text-white bg-neutral-900'
                         }`}
                       >
@@ -277,11 +333,11 @@ export default function CommunityFeed({ currentUser, members = [], posts = [], s
                           value={commentInput[post.id] || ''}
                           onChange={(e) => setCommentInput({ ...commentInput, [post.id]: e.target.value })}
                           onKeyDown={(e) => { if (e.key === 'Enter') handleAddComment(post.id); }}
-                          className="input-field text-xs grow py-2"
+                          className="w-full bg-[#1a1a1a] border border-neutral-800 rounded-xl px-3.5 py-2 text-xs text-white focus:border-yellow-400 outline-none"
                         />
                         <button
                           onClick={() => handleAddComment(post.id)}
-                          className="bg-neutral-800 hover:bg-neutral-700 text-white font-bold text-xs px-3.5 py-2 rounded-xl transition"
+                          className="bg-neutral-800 hover:bg-neutral-700 text-white font-bold text-xs px-3.5 py-2 rounded-xl transition cursor-pointer"
                         >
                           Comment
                         </button>
@@ -308,8 +364,9 @@ export default function CommunityFeed({ currentUser, members = [], posts = [], s
 
               <div className="space-y-3">
                 {members.slice(0, 5).map((m) => {
-                  const isFriend = friends.includes(m.id);
                   if (m.id === currentUser?.id) return null;
+                  const reqState = requestStates[m.id] || (friends.includes(m.id) ? 'connected' : 'none');
+
                   return (
                     <div key={m.id} className="flex items-center justify-between p-2.5 bg-neutral-900 rounded-2xl border border-neutral-800/60 text-xs">
                       <div className="flex items-center gap-2.5">
@@ -322,24 +379,32 @@ export default function CommunityFeed({ currentUser, members = [], posts = [], s
                         </div>
                       </div>
 
-                      <button
-                        onClick={() => handleToggleFriend(m.id)}
-                        className={`p-2 rounded-xl text-xs font-bold transition flex items-center gap-1 ${
-                          isFriend 
-                            ? 'bg-emerald-950/60 text-emerald-400 border border-emerald-500/40' 
-                            : 'bg-yellow-400 hover:bg-yellow-300 text-black font-extrabold'
-                        }`}
-                      >
-                        {isFriend ? (
-                          <>
-                            <UserCheck className="w-3.5 h-3.5" /> Buddies
-                          </>
-                        ) : (
-                          <>
-                            <Plus className="w-3.5 h-3.5" /> Connect
-                          </>
+                      <div className="flex items-center gap-1.5">
+                        <button
+                          onClick={() => handleFriendRequestClick(m.id)}
+                          className={`px-3 py-1.5 rounded-xl text-xs font-black uppercase transition flex items-center gap-1 cursor-pointer ${
+                            reqState === 'connected'
+                              ? 'bg-emerald-950/60 text-emerald-400 border border-emerald-500/40'
+                              : reqState === 'pending'
+                                ? 'bg-amber-500/20 text-amber-400 border border-amber-500/40'
+                                : 'bg-yellow-400 hover:bg-yellow-300 text-black'
+                          }`}
+                        >
+                          {reqState === 'connected' && <><UserCheck className="w-3.5 h-3.5" /> Connected</>}
+                          {reqState === 'pending' && <><Clock className="w-3.5 h-3.5 animate-spin" /> Pending...</>}
+                          {reqState === 'none' && <><UserPlus className="w-3.5 h-3.5" /> Send Request</>}
+                        </button>
+
+                        {reqState === 'connected' && (
+                          <button
+                            onClick={() => setActiveChatMember(m)}
+                            className="p-1.5 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-yellow-400 border border-neutral-700 transition cursor-pointer"
+                            title="Direct Message Member"
+                          >
+                            <MessageCircle className="w-4 h-4" />
+                          </button>
                         )}
-                      </button>
+                      </div>
                     </div>
                   );
                 })}
@@ -363,7 +428,7 @@ export default function CommunityFeed({ currentUser, members = [], posts = [], s
 
         </div>
       ) : (
-        /* Find Buddies Tab */
+        /* Find Buddies Tab (Full Member Directory) */
         <div className="bg-[#121212] border border-neutral-800 rounded-3xl p-8 shadow-xl space-y-6">
           <h3 className="text-xl font-black text-white font-['Outfit'] uppercase">
             Active Bulandshahr Gym Members Directory
@@ -371,35 +436,121 @@ export default function CommunityFeed({ currentUser, members = [], posts = [], s
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {members.map((m) => {
-              const isFriend = friends.includes(m.id);
+              const reqState = requestStates[m.id] || (friends.includes(m.id) ? 'connected' : 'none');
               return (
                 <div key={m.id} className="bg-neutral-900 border border-neutral-800 p-4 rounded-2xl space-y-3">
-                  <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-2xl bg-yellow-400 text-black font-black text-lg flex items-center justify-center font-['Outfit']">
-                      {m.name.charAt(0)}
-                    </div>
-                    <div>
-                      <h4 className="text-sm font-extrabold text-white">{m.name}</h4>
-                      <p className="text-xs text-yellow-400 font-bold">{m.plan}</p>
-                      <p className="text-[10px] text-neutral-400 mt-0.5">Streak: {m.streak} Days 🔥</p>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="w-12 h-12 rounded-2xl bg-yellow-400 text-black font-black text-lg flex items-center justify-center font-['Outfit']">
+                        {m.name.charAt(0)}
+                      </div>
+                      <div>
+                        <h4 className="text-sm font-extrabold text-white">{m.name}</h4>
+                        <p className="text-xs text-yellow-400 font-bold">{m.plan}</p>
+                        <p className="text-[10px] text-neutral-400 mt-0.5">Streak: {m.streak} Days 🔥</p>
+                      </div>
                     </div>
                   </div>
 
-                  <button
-                    onClick={() => handleToggleFriend(m.id)}
-                    className={`w-full py-2 rounded-xl text-xs font-black uppercase transition flex items-center justify-center gap-1.5 ${
-                      isFriend 
-                        ? 'bg-emerald-950/60 text-emerald-400 border border-emerald-500/40' 
-                        : 'bg-yellow-400 hover:bg-yellow-300 text-black'
-                    }`}
-                  >
-                    {isFriend ? <UserCheck className="w-4 h-4" /> : <UserPlus className="w-4 h-4" />}
-                    {isFriend ? 'Connected Gym Buddy' : 'Add Friend Request'}
-                  </button>
+                  <div className="flex gap-2 pt-1">
+                    <button
+                      onClick={() => handleFriendRequestClick(m.id)}
+                      className={`w-full py-2 rounded-xl text-xs font-black uppercase transition flex items-center justify-center gap-1.5 cursor-pointer ${
+                        reqState === 'connected'
+                          ? 'bg-emerald-950/60 text-emerald-400 border border-emerald-500/40'
+                          : reqState === 'pending'
+                            ? 'bg-amber-500/20 text-amber-400 border border-amber-500/40'
+                            : 'bg-yellow-400 hover:bg-yellow-300 text-black'
+                      }`}
+                    >
+                      {reqState === 'connected' && <><UserCheck className="w-4 h-4" /> Connected Buddy</>}
+                      {reqState === 'pending' && <><Clock className="w-4 h-4 animate-spin" /> Pending Approval</>}
+                      {reqState === 'none' && <><UserPlus className="w-4 h-4" /> Send Request</>}
+                    </button>
+
+                    {reqState === 'connected' && (
+                      <button
+                        onClick={() => setActiveChatMember(m)}
+                        className="px-3.5 py-2 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-yellow-400 border border-neutral-700 transition cursor-pointer"
+                        title="Chat Direct"
+                      >
+                        <MessageCircle className="w-4 h-4" />
+                      </button>
+                    )}
+                  </div>
                 </div>
               );
             })}
           </div>
+        </div>
+      )}
+
+      {/* Slide-over Direct Messaging / Member Chat Drawer */}
+      {activeChatMember && (
+        <div className="fixed inset-y-0 right-0 z-50 w-full max-w-md bg-[#121212] border-l-2 border-yellow-400/60 shadow-2xl flex flex-col animate-slide-in">
+          
+          {/* Chat Drawer Header */}
+          <div className="p-4 bg-neutral-900 border-b border-neutral-800 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-full bg-yellow-400 text-black font-black flex items-center justify-center text-sm font-['Outfit']">
+                {activeChatMember.name.charAt(0)}
+              </div>
+              <div>
+                <h4 className="text-sm font-extrabold text-white">{activeChatMember.name}</h4>
+                <span className="text-[10px] text-emerald-400 font-bold flex items-center gap-1">
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" /> Active on Gym Floor
+                </span>
+              </div>
+            </div>
+
+            <button
+              onClick={() => setActiveChatMember(null)}
+              className="p-2 rounded-xl bg-neutral-800 text-neutral-400 hover:text-white transition"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+
+          {/* Chat Messages Log */}
+          <div className="flex-1 p-4 overflow-y-auto space-y-3 bg-black/40 text-xs">
+            {(chatLogs[activeChatMember.id] || [
+              { id: 100, sender: 'them', text: `Hi! Let's connect and schedule a workout session together at Energie Fitness!`, time: 'Just now' }
+            ]).map((msg) => (
+              <div
+                key={msg.id}
+                className={`flex flex-col ${msg.sender === 'me' ? 'items-end' : 'items-start'}`}
+              >
+                <div
+                  className={`max-w-[80%] p-3 rounded-2xl ${
+                    msg.sender === 'me'
+                      ? 'bg-yellow-400 text-black font-medium rounded-br-none'
+                      : 'bg-neutral-900 text-neutral-200 border border-neutral-800 rounded-bl-none'
+                  }`}
+                >
+                  <p>{msg.text}</p>
+                </div>
+                <span className="text-[9px] text-neutral-500 mt-1 font-mono">{msg.time}</span>
+              </div>
+            ))}
+          </div>
+
+          {/* Chat Input Bar */}
+          <form onSubmit={handleSendChatMessage} className="p-4 bg-neutral-900 border-t border-neutral-800 flex gap-2">
+            <input
+              type="text"
+              placeholder="Type your message..."
+              value={chatInput}
+              onChange={(e) => setChatInput(e.target.value)}
+              className="w-full bg-[#1a1a1a] border border-neutral-800 rounded-xl px-4 py-2.5 text-xs text-white focus:border-yellow-400 outline-none"
+            />
+            <button
+              type="submit"
+              className="bg-yellow-400 hover:bg-yellow-300 text-black font-black text-xs px-4 py-2.5 rounded-xl transition flex items-center gap-1 cursor-pointer"
+            >
+              <Send className="w-4 h-4" />
+            </button>
+          </form>
+
         </div>
       )}
 

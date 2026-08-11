@@ -64,8 +64,8 @@ export default function Services({ onOpenTrialModal, services }) {
 
               <div className="pt-5 mt-5 border-t border-neutral-800">
                 <button 
-                  onClick={onOpenTrialModal} 
-                  className="w-full text-xs font-black uppercase text-neutral-300 hover:text-yellow-400 flex items-center justify-between transition"
+                  onClick={() => onOpenTrialModal(service)} 
+                  className="w-full text-xs font-black uppercase text-neutral-300 hover:text-yellow-400 flex items-center justify-between transition cursor-pointer"
                 >
                   <span>Experience in 1-Day Trial</span>
                   <ArrowRight className="w-4 h-4 text-yellow-400" />

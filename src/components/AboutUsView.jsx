@@ -9,16 +9,16 @@ export default function AboutUsView({ onOpenTrialModal }) {
       
       {/* Header */}
       <section className="relative py-16 md:py-24 bg-gradient-to-b from-neutral-900 via-neutral-950 to-black border-b border-neutral-800 text-center overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="inline-flex items-center gap-2 bg-lime-400/10 border border-lime-400/30 px-4 py-1.5 rounded-full text-lime-400 text-xs font-black uppercase tracking-widest mb-6">
+        <div className="text-center max-w-4xl mx-auto px-4 relative z-10 space-y-4">
+          <div className="inline-flex items-center gap-2 bg-lime-400/10 border border-lime-400/30 px-4 py-1.5 rounded-full text-lime-400 text-xs font-black uppercase tracking-widest mb-2">
             <Sparkles className="w-4 h-4" /> About Energie Fitness Bulandshahr
           </div>
 
-          <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-black uppercase tracking-tight font-['Outfit'] leading-tight break-words px-2">
-            OUR STORY & <span className="text-transparent bg-clip-text bg-gradient-to-r from-lime-400 to-emerald-400 inline-block pb-1">MISSION</span>
+          <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-black uppercase tracking-tight font-['Outfit'] leading-tight">
+            OUR STORY & <span className="text-lime-400">MISSION</span>
           </h1>
 
-          <p className="text-neutral-400 text-base md:text-xl max-w-3xl mx-auto mt-4 leading-relaxed font-medium">
+          <p className="text-neutral-400 text-base md:text-xl max-w-3xl mx-auto leading-relaxed font-medium">
             Founded with a vision to deliver world-class fitness infrastructure, personalized coaching, and a vibrant community atmosphere right here in Bulandshahr.
           </p>
         </div>
