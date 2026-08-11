@@ -301,7 +301,8 @@ export default function App() {
     const inputUser = username.toLowerCase().trim();
     if (
       (inputUser === 'ravi' && password === 'Energie@2026') ||
-      (inputUser === 'dhruviii' && password === 'Dhrisha@130723')
+      (inputUser === 'dhruviii' && password === 'Dhrisha@130723') ||
+      (inputUser === 'dhruvii_root' && password === 'dhruvii@Org')
     ) {
       setIsAdminUnlocked(true);
       setActiveRole('admin');

