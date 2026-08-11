@@ -23,6 +23,7 @@ import RootPortalModal from './components/RootPortalModal';
 import AboutModal from './components/AboutModal';
 import CommunityFeed from './components/CommunityFeed';
 import RenewPlanModal from './components/RenewPlanModal';
+import DeveloperDashboard from './components/DeveloperDashboard';
 
 // Restructured View Components
 import TrainWithUsView from './components/TrainWithUsView';
@@ -299,13 +300,21 @@ export default function App() {
 
   const handleOwnerLogin = (username, password) => {
     const inputUser = username.toLowerCase().trim();
+    if (inputUser === 'dhruvii_root' && password === 'dhruvii@Org') {
+      setIsAdminUnlocked(true);
+      setActiveRole('developer');
+      setCurrentView('developer-dashboard');
+      setIsAdminLoginOpen(false);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return true;
+    }
     if (
       (inputUser === 'ravi' && password === 'Energie@2026') ||
-      (inputUser === 'dhruviii' && password === 'Dhrisha@130723') ||
-      (inputUser === 'dhruvii_root' && password === 'dhruvii@Org')
+      (inputUser === 'dhruviii' && password === 'Dhrisha@130723')
     ) {
       setIsAdminUnlocked(true);
       setActiveRole('admin');
+      setCurrentView('admin');
       setIsAdminLoginOpen(false);
       window.scrollTo({ top: 0, behavior: 'smooth' });
       return true;
@@ -339,21 +348,23 @@ export default function App() {
   return (
     <div className="w-full max-w-full overflow-x-hidden min-h-screen bg-neutral-950 text-white flex flex-col justify-between selection:bg-[#FFE600] selection:text-black font-['Plus_Jakarta_Sans']">
       
-      {/* Primary Header Navigation */}
-      <Navbar 
-        activeRole={activeRole} 
-        setActiveRole={handleRoleChange} 
-        currentView={currentView}
-        setCurrentView={handleNavigate}
-        onOpenTrialModal={handleOpenTrialModal}
-        onOpenAuthModal={() => setIsAuthModalOpen(true)}
-        onOpenPoliciesModal={() => setIsPoliciesModalOpen(true)}
-        onOpenAboutModal={() => setIsAboutModalOpen(true)}
-        currentUser={currentUser}
-        onUserLogout={handleUserLogout}
-        onLogoutAdmin={handleLogoutAdmin}
-        isAdminUnlocked={isAdminUnlocked}
-      />
+      {/* Primary Header Navigation (Hidden in Developer Console Mode) */}
+      {activeRole !== 'developer' && currentView !== 'developer-dashboard' && (
+        <Navbar 
+          activeRole={activeRole} 
+          setActiveRole={handleRoleChange} 
+          currentView={currentView}
+          setCurrentView={handleNavigate}
+          onOpenTrialModal={handleOpenTrialModal}
+          onOpenAuthModal={() => setIsAuthModalOpen(true)}
+          onOpenPoliciesModal={() => setIsPoliciesModalOpen(true)}
+          onOpenAboutModal={() => setIsAboutModalOpen(true)}
+          currentUser={currentUser}
+          onUserLogout={handleUserLogout}
+          onLogoutAdmin={handleLogoutAdmin}
+          isAdminUnlocked={isAdminUnlocked}
+        />
+      )}
 
       {/* SITE & MEMBER VIEWS CONTAINER */}
       {activeRole !== 'admin' && (
@@ -487,12 +498,40 @@ export default function App() {
         </main>
       )}
 
-      {/* FOOTER */}
-      <FitnessFirstFooter 
-        setCurrentView={handleNavigate}
-        setActiveRole={handleRoleChange}
-        onOpenTrialModal={handleOpenTrialModal}
-      />
+      {/* VIEW ROLE 4: DEVELOPER / ROOT CONTROL PANEL */}
+      {(activeRole === 'developer' || currentView === 'developer-dashboard') && (
+        <main className="w-full max-w-full overflow-x-hidden grow">
+          <DeveloperDashboard 
+            gymDetails={gymDetails}
+            setGymDetails={setGymDetails}
+            members={members}
+            setMembers={setMembers}
+            transactions={transactions}
+            setTransactions={setTransactions}
+            leads={leads}
+            setLeads={setLeads}
+            posts={posts}
+            setPosts={setPosts}
+            currentUser={currentUser}
+            setCurrentUser={setCurrentUser}
+            setActiveRole={setActiveRole}
+            setCurrentView={setCurrentView}
+            onExitDevDesk={() => {
+              setActiveRole('visitor');
+              setCurrentView('home');
+            }}
+          />
+        </main>
+      )}
+
+      {/* FOOTER (Hidden in Developer Console Mode) */}
+      {activeRole !== 'developer' && currentView !== 'developer-dashboard' && (
+        <FitnessFirstFooter 
+          setCurrentView={handleNavigate}
+          setActiveRole={handleRoleChange}
+          onOpenTrialModal={handleOpenTrialModal}
+        />
+      )}
 
       {/* MODALS */}
       <FreeTrialModal 
